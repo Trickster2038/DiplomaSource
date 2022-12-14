@@ -1,142 +1,164 @@
 package main
 
 import (
-    "fmt"
-    "os/exec"
-    "runtime"
-    "os"
-    "net/http"
-    "encoding/json"
-    "io/ioutil"
-    "github.com/gorilla/mux"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"os/exec"
+	"regexp"
+	"runtime"
+
+	"github.com/gorilla/mux"
 )
 
 type SourceFiles struct {
-    User_id string `json:"user_id"`
-    Level_id string `json:"level_id"`
-    Device_src string `json:"device_src"`
-    Tb_src string `json:"tb_src"`
+	User_id    string `json:"user_id"`
+	Level_id   string `json:"level_id"`
+	Device_src string `json:"device_src"`
+	Tb_src     string `json:"tb_src"`
 }
 
 type ResponseFrame struct {
-    Status_str string `json:"status_str"`
-    Status_code int `json:"status_code"`
-    Message string `json:"message,omitempty"`
-    Value_change_dump string `json:"value_change_dump,omitempty"`
+	Status_str        string `json:"status_str"`
+	Status_code       int    `json:"status_code"`
+	Message           string `json:"message,omitempty"`
+	Value_change_dump string `json:"value_change_dump,omitempty"`
 }
 
-func create_or_update(user_id string, level_id string, device_src  string, tb_src string) int {
-    os.MkdirAll((user_id + "/" + level_id), 0777)
-    f, err1 := os.Create((user_id + "/" + level_id + "/device.v"))
-    _, err2 := f.WriteString(device_src)
-    f, err3 := os.Create((user_id + "/" + level_id + "/tb.v"))
-    _, err4 := f.WriteString(tb_src)
-    if ((err1 != nil) || (err2 != nil) || (err3 != nil) || (err4 != nil)){
-        return 1
-    }
-    return 0
+func add_dump_macros(user_id string, level_id string, tb_src string) string {
+	var re = regexp.MustCompile(`\$dumpfile\(.*\);`)
+	s := re.ReplaceAllString(tb_src, ``)
+	re = regexp.MustCompile(`\$dumpvars;`)
+	s = re.ReplaceAllString(s, "$$dumpfile(\""+
+		user_id+"/"+level_id+"/device"+
+		".vcd\");\n$$dumpvars;")
+	return s
+}
+
+func create_or_update(user_id string, level_id string, device_src string, tb_src string) int {
+	os.MkdirAll((user_id + "/" + level_id), 0777)
+	f, err1 := os.Create((user_id + "/" + level_id + "/device.v"))
+	_, err2 := f.WriteString(device_src)
+	f, err3 := os.Create((user_id + "/" + level_id + "/tb.v"))
+	_, err4 := f.WriteString(tb_src)
+	if (err1 != nil) || (err2 != nil) || (err3 != nil) || (err4 != nil) {
+		return 1
+	}
+	return 0
 }
 
 func compile_and_visualise(user_id string, level_id string) int {
-    device_path := user_id + "/" + level_id + "/device.v"
-    tb_path := user_id + "/" + level_id + "/tb.v"
-    out_path := user_id + "/" + level_id + "/device"
+	device_path := user_id + "/" + level_id + "/device.v"
+	tb_path := user_id + "/" + level_id + "/tb.v"
+	out_path := user_id + "/" + level_id + "/device"
 
-    _, err := exec.Command("bash", "-c", ("iverilog -o " + out_path + " " + device_path + " " + tb_path)).Output()
-    if err != nil {
-        return 1
-    }
+	_, err := exec.Command("bash", "-c", ("iverilog -o " + out_path + " " + device_path + " " + tb_path)).Output()
+	if err != nil {
+		return 1
+	}
 
-    _, err = exec.Command("bash", "-c", ("vvp " + out_path)).Output()
-    if err != nil {
-        return 2
-    }
+	_, err = exec.Command("bash", "-c", ("vvp " + out_path)).Output()
+	if err != nil {
+		return 2
+	}
 
-    return 0
+	return 0
 }
 
 func build(w http.ResponseWriter, req *http.Request) {
-    var response ResponseFrame
+	var response ResponseFrame
 
-    reqBody, _ := ioutil.ReadAll(req.Body)
-    var dataFrame SourceFiles
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var dataFrame SourceFiles
 
-    err := json.Unmarshal(reqBody, &dataFrame)
-    if err != nil { 
-        defer func() {
-            if r := recover(); r != nil {
-                response.Status_str = "error"
-                response.Status_code = 400
-                response.Message = err.Error()
-                w.WriteHeader(response.Status_code)
-                json.NewEncoder(w).Encode(response)
-            }
-        }()
-        panic("JSON parsing error")
-    }
+	err := json.Unmarshal(reqBody, &dataFrame)
+	if err != nil {
+		defer func() {
+			if r := recover(); r != nil {
+				response.Status_str = "error"
+				response.Status_code = 400
+				response.Message = err.Error()
+				w.WriteHeader(response.Status_code)
+				json.NewEncoder(w).Encode(response)
+			}
+		}()
+		panic("JSON parsing error")
+	}
 
-    // FIXME: file is always locked
-    defer func() {
-        if r := recover(); r != nil {
-            exec.Command(dataFrame.User_id + "/" + dataFrame.Level_id)
-            os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
-        }
-    }()
+	defer func() {
+		err := os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
+		if err != nil {
+			fmt.Printf("error: %s", err)
+		}
+	}()
 
-    err_int := create_or_update(dataFrame.User_id, dataFrame.Level_id, 
-        dataFrame.Device_src, dataFrame.Tb_src)
-        if err_int != 0 { 
-            defer func() {
-                if r := recover(); r != nil {
-                    response.Status_str = "error"
-                    response.Status_code = 400
-                    response.Message = "writing files error"
-                    w.WriteHeader(response.Status_code)
-                    json.NewEncoder(w).Encode(response)
-                }
-            }()
-            panic("Writing files error")
-        }
+	dataFrame.Tb_src = add_dump_macros(dataFrame.User_id,
+		dataFrame.Level_id, dataFrame.Tb_src)
 
-    err_int = compile_and_visualise(dataFrame.User_id, dataFrame.Level_id)
-    if err_int != 0 { 
-        defer func() {
-            if r := recover(); r != nil {
-                response.Status_str = "error"
-                response.Status_code = 400
-                if(err_int == 1){
-                    response.Message = "synthethis error"
-                } else {
-                    response.Message = "simulation error"
-                }
-                w.WriteHeader(response.Status_code)
-                json.NewEncoder(w).Encode(response)
-            }
-        }()
-        panic("Simulation error")
-    }
+	err_int := create_or_update(dataFrame.User_id, dataFrame.Level_id,
+		dataFrame.Device_src, dataFrame.Tb_src)
+	if err_int != 0 {
+		defer func() {
+			if r := recover(); r != nil {
+				response.Status_str = "error"
+				response.Status_code = 400
+				response.Message = "writing files error"
+				w.WriteHeader(response.Status_code)
+				json.NewEncoder(w).Encode(response)
+			}
+		}()
+		panic("Writing files error")
+	}
 
-    value_change_dump, _ := os.ReadFile("adder.vcd") 
+	defer func() {
+		err := os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
+		if err != nil {
+			fmt.Printf("error: %s", err)
+		}
+	}()
 
-    response.Status_str = "ok"
-    response.Status_code = 200
-    response.Message = "compiled successfully"
-    response.Value_change_dump = string(value_change_dump)
-    w.WriteHeader(response.Status_code)
-    json.NewEncoder(w).Encode(response)
+	err_int = compile_and_visualise(dataFrame.User_id, dataFrame.Level_id)
+	if err_int != 0 {
+		defer func() {
+			if r := recover(); r != nil {
+				response.Status_str = "error"
+				response.Status_code = 400
+				if err_int == 1 {
+					response.Message = "synthethis error"
+				} else {
+					response.Message = "simulation error"
+				}
+				w.WriteHeader(response.Status_code)
+				json.NewEncoder(w).Encode(response)
+			}
+		}()
+		panic("Simulation error")
+	}
+
+	value_change_dump, _ := os.ReadFile(dataFrame.User_id + "/" +
+		dataFrame.Level_id + "/device.vcd")
+
+	response.Status_str = "ok"
+	response.Status_code = 200
+	response.Message = "compiled successfully"
+	response.Value_change_dump = string(value_change_dump)
+	w.WriteHeader(response.Status_code)
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
-    if runtime.GOOS == "windows" {
-        fmt.Println("Can't Execute this on a windows machine")
-    } else {
+	if runtime.GOOS == "windows" {
+		fmt.Println("Can't Execute this on a windows machine")
+	} else {
 
-        fmt.Println("Server start")
-        r := mux.NewRouter().StrictSlash(true)
-        r.HandleFunc("/build", build).Methods("POST")
-       
-        exec.Command("fuser", "-k", "8080/tcp").Output()
-        http.ListenAndServe(":8080", r)
-        fmt.Println("Server stop")
-    }
+		fmt.Println("Server start")
+		r := mux.NewRouter().StrictSlash(true)
+		r.HandleFunc("/build", build).Methods("POST")
+
+		exec.Command("fuser", "-k", "8080/tcp").Output()
+		http.ListenAndServe(":8080", r)
+		fmt.Println("Server stop")
+	}
 }
