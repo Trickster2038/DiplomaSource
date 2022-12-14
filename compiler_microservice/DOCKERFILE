@@ -24,6 +24,6 @@ COPY --from=build /go-verilog-compiler /go-verilog-compiler
 
 EXPOSE 8080
 
-USER nonroot:nonroot
+USER root
 
 ENTRYPOINT ["/go-verilog-compiler"]

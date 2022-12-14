@@ -102,10 +102,7 @@ func build(w http.ResponseWriter, req *http.Request) {
 	}
 
 	defer func() {
-		err := os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
-		if err != nil {
-			fmt.Printf("error: %s", err)
-		}
+		os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
 	}()
 
 	dataFrame.Tb_src = add_dump_macros(dataFrame.User_id,
