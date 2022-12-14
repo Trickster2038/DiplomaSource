@@ -28,10 +28,10 @@ type ResponseFrame struct {
 }
 
 func add_dump_macros(user_id string, level_id string, tb_src string) string {
-	var re = regexp.MustCompile(`\$dumpfile\(.*\);`)
-	s := re.ReplaceAllString(tb_src, ``)
-	re = regexp.MustCompile(`\$dumpvars;`)
-	s = re.ReplaceAllString(s, "$$dumpfile(\""+
+	var r = regexp.MustCompile(`\$dumpfile\(.*\);`)
+	s := r.ReplaceAllString(tb_src, ``)
+	r = regexp.MustCompile(`\$dumpvars;`)
+	s = r.ReplaceAllString(s, "$$dumpfile(\""+
 		user_id+"/"+level_id+"/device"+
 		".vcd\");\n$$dumpvars;")
 	return s
@@ -85,6 +85,20 @@ func build(w http.ResponseWriter, req *http.Request) {
 			}
 		}()
 		panic("JSON parsing error")
+	}
+
+	r := regexp.MustCompile(`.*\$dumpvars;.*`)
+	if !r.MatchString(dataFrame.Tb_src) {
+		defer func() {
+			if r := recover(); r != nil {
+				response.Status_str = "error"
+				response.Status_code = 400
+				response.Message = "testbench without \"$dumpvars\""
+				w.WriteHeader(response.Status_code)
+				json.NewEncoder(w).Encode(response)
+			}
+		}()
+		panic("Testbench without \"$dumpvars\"")
 	}
 
 	defer func() {
