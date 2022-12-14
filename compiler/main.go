@@ -46,11 +46,28 @@ func create_or_update(user_id string, level_id string, device_src  string, tb_sr
     f.WriteString(tb_src)
 }
 
+func compile_and_visualise(user_id string, level_id string) {
+    device_path := user_id + "/" + level_id + "/device.v"
+    tb_path := user_id + "/" + level_id + "/tb.v"
+    out_path := user_id + "/" + level_id + "/device"
+    _, err := exec.Command("bash", "-c", ("iverilog -o  " + out_path + " " + device_path + " " + tb_path)).Output()
+    if err != nil {
+        fmt.Printf("%s", err)
+    }
+}
+
 func main() {
     if runtime.GOOS == "windows" {
         fmt.Println("Can't Execute this on a windows machine")
     } else {
-        execute2()
-        create_or_update("a", "b", "g", "h")
+        //execute2()
+        f, _ := os.ReadFile("adder.v")
+        device_src := string(f)
+
+        f, _ = os.ReadFile("adder_tb.v")
+        tb_src := string(f)
+
+        create_or_update("a", "b", device_src, tb_src)
+        compile_and_visualise("a", "b")
     }
 }
