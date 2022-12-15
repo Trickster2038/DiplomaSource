@@ -5,8 +5,6 @@ FROM golang:1.16-buster AS build
 
 WORKDIR /app
 
-RUN apt update && apt install -y iverilog && rm -rf /var/lib/apt/lists/*
-
 COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
@@ -16,7 +14,9 @@ COPY *.go ./
 RUN go build -o /go-verilog-compiler
 
 ## Deploy
-FROM gcr.io/distroless/base-debian10
+FROM ubuntu:latest
+
+RUN apt update && apt install -y iverilog && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 

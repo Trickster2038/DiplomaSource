@@ -54,12 +54,13 @@ func compile_and_visualise(user_id string, level_id string) int {
 	tb_path := user_id + "/" + level_id + "/tb.v"
 	out_path := user_id + "/" + level_id + "/device"
 
-	_, err := exec.Command("bash", "-c", ("iverilog -o " + out_path + " " + device_path + " " + tb_path)).Output()
+	_, err := exec.Command("/bin/sh", "-c", ("iverilog -o " + out_path + " " + device_path + " " + tb_path)).Output()
 	if err != nil {
+		fmt.Printf("CMD-ERROR: %s\n", err)
 		return 1
 	}
 
-	_, err = exec.Command("bash", "-c", ("vvp " + out_path)).Output()
+	_, err = exec.Command("/bin/sh", "-c", ("vvp " + out_path)).Output()
 	if err != nil {
 		return 2
 	}
