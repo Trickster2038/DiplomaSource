@@ -46,7 +46,7 @@ def parse_handler():
                 return {
                     "status": "ok",
                     "code": 200,
-                    "vcd_parsed": vcd_parsed
+                    "vcd_parsed": vcd_parsed #FIXME: get only first child
                 }, 200
             except Exception as e:
                 return {
