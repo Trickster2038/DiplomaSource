@@ -8,6 +8,16 @@ import (
 	"sort"
 )
 
+/*
+TODO:
+- web
+- docker
+- errors
+- checks
+- UI align of signals labels
+- HEX labels for signals?
+*/
+
 type VCD_obj struct {
 	Children []struct {
 		Name string `json:"name"`
@@ -82,13 +92,17 @@ func (vcdFrame VCD_obj) parseValues(end_scale int) (map[string]string, map[strin
 	end_time := timings[len(timings)-1] + tick_amount*end_scale
 	for i := 0; i <= end_time/tick_amount; i++ {
 		for _, x := range vcdFrame.Children {
+			flag := false
 			for _, y := range x.Data {
 				if int(math.Round(y[0].(float64))) == i*tick_amount {
 					parsedData[x.Name] = append(parsedData[x.Name], y[1].(string))
 					parsedWaves[x.Name] += "="
-				} else {
-					parsedWaves[x.Name] += "."
+					flag = true
+					break
 				}
+			}
+			if !flag {
+				parsedWaves[x.Name] += "."
 			}
 		}
 	}
