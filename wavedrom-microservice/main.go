@@ -19,14 +19,14 @@ TODO:
 */
 
 type VCD_obj struct {
-	Children []struct {
+	Signal []struct {
 		Name string `json:"name"`
 		Type struct {
 			Name  string `json:"name"`
 			Width int    `json:"width"`
 		} `json:"type"`
 		Data [][]interface{} `json:"data"`
-	} `json:"children"`
+	} `json:"vcd_parsed"`
 }
 
 type WD_Signal struct {
@@ -65,9 +65,9 @@ func findGCD(nums []int) int {
 	return gcd
 }
 
-func (vcdFrame VCD_obj) getTimings() []int {
+func (vcdFrame VCD_obj) getSortedTimings() []int {
 	var timeArray []int
-	for _, x := range vcdFrame.Children {
+	for _, x := range vcdFrame.Signal {
 		for _, y := range x.Data {
 			num := int(math.Round(y[0].(float64)))
 			if num != 0 {
@@ -87,11 +87,11 @@ func (vcdFrame VCD_obj) parseValues(end_scale int) (map[string]string, map[strin
 	var parsedData = map[string][]string{}
 	var parsedWaves = map[string]string{}
 
-	timings := vcdFrame.getTimings()
+	timings := vcdFrame.getSortedTimings()
 	tick_amount := findGCD(timings)
 	end_time := timings[len(timings)-1] + tick_amount*end_scale
 	for i := 0; i <= end_time/tick_amount; i++ {
-		for _, x := range vcdFrame.Children {
+		for _, x := range vcdFrame.Signal {
 			flag := false
 			for _, y := range x.Data {
 				if int(math.Round(y[0].(float64))) == i*tick_amount {
@@ -119,7 +119,7 @@ func (vcdFrame VCD_obj) encodeWD(end_scale int) WD_obj {
 }
 
 func main() {
-	b, err := os.ReadFile("data.json")
+	b, err := os.ReadFile("data2.json")
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -127,15 +127,15 @@ func main() {
 	var vcdFrame VCD_obj
 	json.Unmarshal(b, &vcdFrame)
 
-	fmt.Println("Name: ", string(vcdFrame.Children[0].Name))
-	fmt.Println("Type: ", string(vcdFrame.Children[0].Type.Name))
-	fmt.Println("Width: ", int(vcdFrame.Children[0].Type.Width))
-	fmt.Println("Data: ", vcdFrame.Children[0].Data[1][0], vcdFrame.Children[0].Data[1][1])
+	fmt.Println("Name: ", string(vcdFrame.Signal[0].Name))
+	fmt.Println("Type: ", string(vcdFrame.Signal[0].Type.Name))
+	fmt.Println("Width: ", int(vcdFrame.Signal[0].Type.Width))
+	fmt.Println("Data: ", vcdFrame.Signal[0].Data[1][0], vcdFrame.Signal[0].Data[1][1])
 
-	fmt.Println("GCD: ", findGCD(vcdFrame.getTimings()))
+	fmt.Println("GCD: ", findGCD(vcdFrame.getSortedTimings()))
 
-	wave, data := vcdFrame.parseValues(3)
-	fmt.Println("Parsed Values, Data: ", wave, data)
+	// wave, data := vcdFrame.parseValues(3)
+	// fmt.Println("Parsed Values, Data: ", wave, data)
 	s, _ := json.MarshalIndent(vcdFrame.encodeWD(3), "", " ")
 	fmt.Println("Wavedrom ", string(s))
 }
