@@ -71,6 +71,17 @@ func compile_and_visualise(user_id string, level_id string) int {
 func build(w http.ResponseWriter, req *http.Request) {
 	var response ResponseFrame
 
+	defer func() {
+		if panicInfo := recover(); panicInfo != nil {
+			var response ResponseFrame
+			response.Status_str = "error"
+			response.Status_code = 400
+			response.Message = fmt.Sprintf("Top-level panic: %v", panicInfo)
+			w.WriteHeader(response.Status_code)
+			json.NewEncoder(w).Encode(response)
+		}
+	}()
+
 	reqBody, _ := ioutil.ReadAll(req.Body)
 	var dataFrame SourceFiles
 
@@ -164,7 +175,6 @@ func main() {
 	if runtime.GOOS == "windows" {
 		fmt.Println("Can't Execute this on a windows machine")
 	} else {
-
 		fmt.Println("Server start")
 		r := mux.NewRouter().StrictSlash(true)
 		r.HandleFunc("/build", build).Methods("POST")

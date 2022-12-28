@@ -20,7 +20,6 @@ def parse_func(user_id, level_id, value_change_dump):
     os.remove(fname)
 
     return data
-    # return json.dumps(data, indent=4, sort_keys=True)
 
 
 # ===== Flask Server =====
@@ -32,32 +31,33 @@ def parse_handler():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
         req = request.json
-        if not(("user_id" in req) and ("level_id" in req)
-               and ("value_change_dump" in req)):
+        if not (("user_id" in req) and ("level_id" in req)
+                and ("value_change_dump" in req)):
             return {
-                "status": "error",
-                "code": 400,
+                "status_str": "error",
+                "status_code": 400,
                 "message": "JSON missing fields"
             }, 400
         else:
             try:
                 vcd_parsed = parse_func(str(req["user_id"]), str(req["level_id"]),
-                                   str(req["value_change_dump"]))
+                                        str(req["value_change_dump"]))
                 return {
-                    "status": "ok",
-                    "code": 200,
-                    "vcd_parsed": list(filter(lambda signal: signal["type"]["name"] != "struct", vcd_parsed["children"][0]["children"])) #FIXME: get only first child
+                    "status_str": "ok",
+                    "status_code": 200,
+                    # FIXME: get only first child
+                    "vcd_parsed": list(filter(lambda signal: signal["type"]["name"] != "struct", vcd_parsed["children"][0]["children"]))
                 }, 200
             except Exception as e:
                 return {
-                    "status": "error",
-                    "code": 400,
-                    "message": f"VCD parse error: {e}"
+                    "status_str": "error",
+                    "status_code": 400,
+                    "message": f"VCD parsing error: {e}"
                 }, 400
     else:
         return {
-            "status": "error",
-            "code": 400,
+            "status_str": "error",
+            "status_code": 400,
             "message": "invalid Content-Type"
         }, 400
 
