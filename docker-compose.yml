@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  compiler:
+    build: ./compiler-microservice
+    ports:
+      - "8080:8080"
+  parser:
+    build: ./parser-microservice
+    ports:
+      - "5000:5000"
+  wavedrom:
+    build: ./wavedrom-microservice
+    ports:
+      - "8081:8081"
