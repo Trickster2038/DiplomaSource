@@ -12,3 +12,14 @@ services:
     build: ./wavedrom-microservice
     ports:
       - "8081:8081"
+  mysqldb:
+    build: ./mysql-db
+    ports:
+      - "8089:3306"
+    environment:
+      MYSQL_DATABASE: levels
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql

@@ -51,9 +51,9 @@ type SingleValueDump struct {
 }
 
 type ResponseFrame struct {
-	Status_str  string `json:"status_str"`
-	Status_code int    `json:"status_code"`
-	Message     string `json:"message,omitempty"`
+	Status_str  string    `json:"status_str"`
+	Status_code int       `json:"status_code"`
+	Message     string    `json:"message,omitempty"`
 	Wavedrom    WD_Struct `json:"wavedrom,omitempty"`
 }
 
