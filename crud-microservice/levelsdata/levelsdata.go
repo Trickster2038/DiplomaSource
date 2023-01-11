@@ -6,10 +6,10 @@ import (
 
 type LevelsData struct {
 	ID              int    `json:"id"`
-	WideDescription string `json:"wide_description, omitempty"`
-	Code            string `json:"code, omitempty"`
-	Question        string `json:"question, omitempty"`
-	Answer          string `json:"answer, omitempty"`
+	WideDescription string `json:"wide_description"`
+	Code            string `json:"code"`
+	Question        string `json:"question"`
+	Answer          string `json:"answer"`
 }
 
 func (level_data LevelsData) CreateOrUpdate() {
@@ -53,7 +53,7 @@ func (level_data LevelsData) Update() {
 	old_level_data.Read(level_data.ID) // existence check
 
 	_, err := db.Query("UPDATE LevelsData SET "+
-		"wide_description = ?, code = ?, question = ?, answer = ?"+
+		"wide_description = ?, code = ?, question = ?, answer = ? "+
 		"WHERE id = ?",
 		level_data.WideDescription,
 		level_data.Code,

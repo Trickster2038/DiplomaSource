@@ -1,9 +1,8 @@
 package main
 
 // TODO:
-// - All microservice =)
-// - read_all() for levels_brief
-// - read levels_brief & levels_data (or just call .read(id) twice?)
+// - Web-CRUD handlers
+// - SolutionEfforts ORM
 
 import (
 	"encoding/json"
@@ -37,8 +36,10 @@ func main() {
 		res, _ := json.Marshal(level_data)
 		fmt.Println(string(res))
 
-		level_data = levelsdata.LevelsData{2, "1tt", "2t", "3t", "4t"}
-		level_data.CreateOrUpdate()
+		level_data = levelsdata.LevelsData{ID: 2, WideDescription: "1tttt", Code: "2t", Question: "3t", Answer: "4t"}
+		// level_data.CreateOrUpdate()
+
+		level_data.Update()
 
 		exec.Command("fuser", "-k", "8082/tcp").Output()
 		http.ListenAndServe(":8082", r)
