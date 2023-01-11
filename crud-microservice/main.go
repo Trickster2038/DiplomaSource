@@ -22,67 +22,66 @@ import (
 	"crud/user"
 )
 
-type RequestFrame struct {
+type MetaInfo struct {
 	Obj_type string `json:"obj_type"`
 	Action   string `json:"action"`
 }
 
+type EncapsuledMetaInfo struct {
+	MetaInfo MetaInfo `json:"MetaInfo"`
+}
+
 type RfSolutionEffort struct {
-	Obj_type string                         `json:"obj_type"`
-	Action   string                         `json:"action"`
+	MetaInfo MetaInfo                       `json:"MetaInfo"`
 	Data     solutionefforts.SolutionEffort `json:"data"`
 }
 
 type RfLevelsBrief struct {
-	Obj_type string                  `json:"obj_type"`
-	Action   string                  `json:"action"`
+	MetaInfo MetaInfo                `json:"MetaInfo"`
 	Data     levelsbrief.LevelsBrief `json:"data"`
 }
 
 type RfLevelsData struct {
-	Obj_type string                `json:"obj_type"`
-	Action   string                `json:"action"`
+	MetaInfo MetaInfo              `json:"MetaInfo"`
 	Data     levelsdata.LevelsData `json:"data"`
 }
 
 type RfTypeRecord struct {
-	Obj_type string          `json:"obj_type"`
-	Action   string          `json:"action"`
+	MetaInfo MetaInfo        `json:"MetaInfo"`
 	Data     typerecord.Type `json:"data"`
 }
 
 type RfUser struct {
-	Obj_type string    `json:"obj_type"`
-	Action   string    `json:"action"`
+	MetaInfo MetaInfo  `json:"MetaInfo"`
 	Data     user.User `json:"data"`
 }
 
-type Creatable interface {
+func (RfSe RfSolutionEffort) Create() {
+	RfSe.Data.Create()
+}
+
+type ICreatable interface {
 	Create()
 }
 
-type Updatable interface {
+type IUpdatable interface {
 	Update()
 }
 
-type CreatableStruct struct {
-	Data Creatable
+type IDeletable interface {
+	Delete()
 }
 
-type UpdatableStruct struct {
-	Data Updatable
+func Create(v ICreatable) {
+	v.Create()
 }
 
-func (RfSf RfSolutionEffort) Create() {
-	RfSf.Data.Create()
+func Update(v IUpdatable) {
+	v.Update()
 }
 
-func Create(v CreatableStruct) {
-	v.Data.Create()
-}
-
-func Update(v UpdatableStruct) {
-	v.Data.Update()
+func Delete(v IDeletable) {
+	v.Delete()
 }
 
 type ResponseFrame struct {
@@ -107,7 +106,7 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	}()
 
 	reqBody, _ := ioutil.ReadAll(req.Body)
-	var reqFrame RequestFrame
+	var reqFrame EncapsuledMetaInfo
 
 	err := json.Unmarshal(reqBody, &reqFrame)
 
@@ -125,7 +124,7 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	}
 
 	var data interface{}
-	if reqFrame.Obj_type == "solutioneffort" {
+	if reqFrame.MetaInfo.Obj_type == "solutioneffort" {
 		data = &RfSolutionEffort{}
 		err := json.Unmarshal(reqBody, data)
 		if err != nil {
@@ -142,10 +141,13 @@ func crud(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if reqFrame.Action == "create" {
-		Create(data.(CreatableStruct))
-	} else if reqFrame.Action == "update" {
-		Update(data.(UpdatableStruct))
+	if reqFrame.MetaInfo.Action == "create" {
+		// Create(data.(CreatableStruct))
+		data.(ICreatable).Create()
+	} else if reqFrame.MetaInfo.Action == "update" {
+		data.(IUpdatable).Update()
+	} else if reqFrame.MetaInfo.Action == "delete" {
+		data.(IDeletable).Delete()
 	}
 
 	response.Status_str = "ok"
