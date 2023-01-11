@@ -23,8 +23,8 @@ type SourceFiles struct {
 type ResponseFrame struct {
 	Status_str        string `json:"status_str"`
 	Status_code       int    `json:"status_code"`
-	Message           string `json:"message,omitempty"`
-	Value_change_dump string `json:"value_change_dump,omitempty"`
+	Message           string `json:"message, omitempty"`
+	Value_change_dump string `json:"value_change_dump, omitempty"`
 }
 
 func add_dump_macros(user_id string, level_id string, tb_src string) string {

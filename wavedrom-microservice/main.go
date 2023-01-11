@@ -16,11 +16,9 @@ import (
 
 /*
 TODO:
-- web
-- docker
-- errors
-- checks
-- UI align of signals labels
+- errors?
+- checks?
+- UI align of signals labels?
 - HEX labels for signals?
 */
 

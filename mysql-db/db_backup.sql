@@ -40,7 +40,7 @@ CREATE TABLE `LevelsBrief` (
 
 LOCK TABLES `LevelsBrief` WRITE;
 /*!40000 ALTER TABLE `LevelsBrief` DISABLE KEYS */;
-INSERT INTO `LevelsBrief` VALUES (1,1,2,3,1,'',' -  ...');
+INSERT INTO `LevelsBrief` VALUES (1,1,2,3,1,'Test level','Description there');
 /*!40000 ALTER TABLE `LevelsBrief` ENABLE KEYS */;
 UNLOCK TABLES;
 
