@@ -1,9 +1,5 @@
 package main
 
-// TODO:
-// - Web-CRUD handlers
-// - SolutionEfforts ORM
-
 import (
 	"encoding/json"
 	"fmt"
