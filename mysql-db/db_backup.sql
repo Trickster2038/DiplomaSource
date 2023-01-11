@@ -52,11 +52,11 @@ DROP TABLE IF EXISTS `LevelsData`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `LevelsData` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `wide_description` text,
-  `code` text,
-  `question` text,
-  `answer` text,
+  `id` int NOT NULL,
+  `wide_description` text NOT NULL,
+  `code` text NOT NULL,
+  `question` text NOT NULL,
+  `answer` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -67,7 +67,7 @@ CREATE TABLE `LevelsData` (
 
 LOCK TABLES `LevelsData` WRITE;
 /*!40000 ALTER TABLE `LevelsData` DISABLE KEYS */;
-INSERT INTO `LevelsData` VALUES (1,' -  ...',NULL,NULL,NULL);
+INSERT INTO `LevelsData` VALUES (1,'Wide desc','1field','2filed','3field');
 /*!40000 ALTER TABLE `LevelsData` ENABLE KEYS */;
 UNLOCK TABLES;
 

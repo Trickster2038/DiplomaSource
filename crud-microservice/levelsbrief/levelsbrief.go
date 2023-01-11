@@ -14,7 +14,8 @@ type LevelsBrief struct {
 	Brief      string `json:"brief, omitempty"`
 }
 
-func (level_brief LevelsBrief) Create() {
+// returns MaxId (current for creating LevelsData)
+func (level_brief LevelsBrief) Create() int {
 	db := connection.Connect_db()
 	_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum + 1 WHERE seqnum >= ?",
 		level_brief.Seqnum)
@@ -33,7 +34,15 @@ func (level_brief LevelsBrief) Create() {
 		panic(err.Error())
 	}
 
+	var maxId int
+	err = db.QueryRow("SELECT max(id) FROM LevelsBrief").Scan(&maxId)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	defer db.Close()
+
+	return maxId
 }
 
 func (level_brief *LevelsBrief) Read(id int) {
@@ -117,4 +126,35 @@ func (level_brief LevelsBrief) Delete() {
 		panic("already deleted (archived)")
 	}
 
+}
+
+func (level_brief LevelsBrief) ReadAll() []LevelsBrief {
+
+	var levels_brief_array []LevelsBrief
+
+	db := connection.Connect_db()
+
+	results, err := db.Query("SELECT id, level_type, seqnum, cost, is_active, name, brief FROM LevelsBrief")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for results.Next() {
+		var level_brief LevelsBrief
+		err = results.Scan(&level_brief.ID,
+			&level_brief.Level_type,
+			&level_brief.Seqnum,
+			&level_brief.Cost,
+			&level_brief.Is_active,
+			&level_brief.Name,
+			&level_brief.Brief)
+		if err != nil {
+			panic(err.Error())
+		}
+		levels_brief_array = append(levels_brief_array, level_brief)
+	}
+
+	defer db.Close()
+
+	return levels_brief_array
 }
