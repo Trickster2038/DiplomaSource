@@ -64,6 +64,7 @@ func (level_data LevelsData) Update() {
 		panic(err.Error())
 	}
 
+	defer db.Close()
 }
 
 func (level_data LevelsData) Delete() {
@@ -77,4 +78,5 @@ func (level_data LevelsData) Delete() {
 		panic(err.Error())
 	}
 
+	defer db.Close()
 }
