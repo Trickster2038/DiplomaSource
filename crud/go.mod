@@ -1,4 +1,4 @@
-module main.go
+module crud
 
 go 1.19
 

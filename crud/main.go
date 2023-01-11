@@ -8,14 +8,13 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"os/exec"
 	"runtime"
 
-	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+
+	"crud/connection"
 )
 
 type User struct {
@@ -34,7 +33,7 @@ type LevelsBrief struct {
 }
 
 func (level_brief LevelsBrief) create() {
-	db := connect_db()
+	db := connection.Connect_db()
 	_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum + 1 WHERE seqnum >= ?",
 		level_brief.Seqnum)
 	if err != nil {
@@ -56,7 +55,7 @@ func (level_brief LevelsBrief) create() {
 }
 
 func (level_brief *LevelsBrief) read(id int) {
-	db := connect_db()
+	db := connection.Connect_db()
 	err := db.QueryRow("SELECT id, level_type, seqnum, cost, is_active, name, brief FROM LevelsBrief where id = ?",
 		id).
 		Scan(&level_brief.ID,
@@ -74,7 +73,7 @@ func (level_brief *LevelsBrief) read(id int) {
 }
 
 func (level_brief LevelsBrief) update() {
-	db := connect_db()
+	db := connection.Connect_db()
 
 	var old_level_brief LevelsBrief
 
@@ -117,7 +116,7 @@ func (level_brief LevelsBrief) update() {
 
 // setting is_active = FALSE
 func (level_brief LevelsBrief) delete() {
-	db := connect_db()
+	db := connection.Connect_db()
 
 	level_brief.read(level_brief.ID) // can call panic
 	if level_brief.Is_active {
@@ -138,38 +137,25 @@ func (level_brief LevelsBrief) delete() {
 
 }
 
-func connect_db() *sql.DB {
-	fmt.Println("DB Connecting")
-	password := os.Getenv("MYSQL_PASS")
-	fmt.Println("Pass:", password)
-	db, err := sql.Open("mysql", fmt.Sprintf("db_user:%s@tcp(0.0.0.0:8089)/levels", password))
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	fmt.Println("DB Connected")
-	return db
-}
-
 func main() {
 	if runtime.GOOS == "windows" {
 		fmt.Println("Can't Execute this on a windows machine")
 	} else {
 		fmt.Println("Server start")
+
+		// connection.PrintHello()
 		r := mux.NewRouter().StrictSlash(true)
 
 		// level := LevelsBrief{0, 1, 2, 3, true, "Level1", "Test level"}
-		level2 := LevelsBrief{0, 1, 5, 3, true, "Level221", "Test descr"}
-		level2.create()
+		// level2 := LevelsBrief{0, 1, 5, 3, true, "Level221", "Test descr"}
+		// level2.create()
 
-		// var lvl_br LevelsBrief
-		// lvl_br.read(2)
+		var lvl_br LevelsBrief
+		lvl_br.read(6)
+		fmt.Println("Lvl name: ", lvl_br.Name)
 
-		// fmt.Println("Lvl name: ", lvl_br.Name)
-
-		level := LevelsBrief{5, 1, 0, 3, true, "Level1111", "Test level"}
-		level.delete()
+		// level := LevelsBrief{5, 1, 0, 3, true, "Level1111", "Test level"}
+		// level.delete()
 
 		exec.Command("fuser", "-k", "8082/tcp").Output()
 		http.ListenAndServe(":8082", r)
