@@ -9,9 +9,9 @@ type User struct {
 	Nickname string `json:"nickname"`
 }
 
-func (user *User) Read(id int) {
+func (user *User) Read() {
 	db := connection.Connect_db()
-	err := db.QueryRow("SELECT id, nickname FROM Users where id = ?", id).
+	err := db.QueryRow("SELECT id, nickname FROM Users where id = ?", user.ID).
 		Scan(&user.ID, &user.Nickname)
 	if err != nil {
 		panic(err.Error())

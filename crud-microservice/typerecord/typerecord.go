@@ -9,9 +9,9 @@ type Type struct {
 	Name string `json:"nickname"`
 }
 
-func (type_struct *Type) Read(id int) {
+func (type_struct *Type) Read() {
 	db := connection.Connect_db()
-	err := db.QueryRow("SELECT id, Name FROM Types where id = ?", id).
+	err := db.QueryRow("SELECT id, Name FROM Types where id = ?", type_struct.ID).
 		Scan(&type_struct.ID, &type_struct.Name)
 	if err != nil {
 		panic(err.Error())

@@ -14,8 +14,8 @@ type LevelsBrief struct {
 	Brief      string `json:"brief"`
 }
 
-// returns MaxId (current for creating LevelsData)
-func (level_brief LevelsBrief) Create() int {
+// TODO: MaxId returning func
+func (level_brief LevelsBrief) Create() {
 	db := connection.Connect_db()
 	_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum + 1 WHERE seqnum >= ?",
 		level_brief.Seqnum)
@@ -34,21 +34,13 @@ func (level_brief LevelsBrief) Create() int {
 		panic(err.Error())
 	}
 
-	var maxId int
-	err = db.QueryRow("SELECT max(id) FROM LevelsBrief").Scan(&maxId)
-	if err != nil {
-		panic(err.Error())
-	}
-
 	defer db.Close()
-
-	return maxId
 }
 
-func (level_brief *LevelsBrief) Read(id int) {
+func (level_brief *LevelsBrief) Read() {
 	db := connection.Connect_db()
 	err := db.QueryRow("SELECT id, level_type, seqnum, cost, is_active, name, brief FROM LevelsBrief where id = ?",
-		id).
+		level_brief.ID).
 		Scan(&level_brief.ID,
 			&level_brief.Level_type,
 			&level_brief.Seqnum,
@@ -67,8 +59,8 @@ func (level_brief LevelsBrief) Update() {
 	db := connection.Connect_db()
 
 	var old_level_brief LevelsBrief
-
-	old_level_brief.Read(level_brief.ID) // can call panic
+	old_level_brief.ID = level_brief.ID
+	old_level_brief.Read() // can call panic
 
 	if level_brief.Seqnum > old_level_brief.Seqnum {
 		_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum - 1 WHERE seqnum > ? AND seqnum < ?",
@@ -110,7 +102,7 @@ func (level_brief LevelsBrief) Update() {
 func (level_brief LevelsBrief) Delete() {
 	db := connection.Connect_db()
 
-	level_brief.Read(level_brief.ID) // can call panic
+	level_brief.Read() // can call panic
 	if level_brief.Is_active {
 		_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum - 1 WHERE seqnum > ?",
 			level_brief.Seqnum)

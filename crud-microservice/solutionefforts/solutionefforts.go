@@ -12,12 +12,12 @@ type SolutionEffort struct {
 	Time         int  `json:"time"`
 }
 
-func (solution_effort SolutionEffort) CheckSuccess(user_id int, level_id int) bool {
+func (solution_effort SolutionEffort) CheckSuccessful() bool {
 	db := connection.Connect_db()
 
 	var count_success int
 	err := db.QueryRow("SELECT count(*) FROM SolutionEfforts where user_id = ? AND level_id = ? AND is_successful = true",
-		user_id, level_id).
+		solution_effort.UserID, solution_effort.LevelID).
 		Scan(&count_success)
 	if err != nil {
 		panic(err.Error())
@@ -29,7 +29,7 @@ func (solution_effort SolutionEffort) CheckSuccess(user_id int, level_id int) bo
 func (solution_effort SolutionEffort) Create() {
 	db := connection.Connect_db()
 
-	if solution_effort.CheckSuccess(solution_effort.UserID, solution_effort.LevelID) {
+	if solution_effort.CheckSuccessful() {
 		panic("Level is already solved")
 	}
 

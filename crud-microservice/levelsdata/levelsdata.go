@@ -12,7 +12,8 @@ type LevelsData struct {
 	Answer          string `json:"answer"`
 }
 
-func (level_data LevelsData) CreateOrUpdate() {
+// Create OR UPDATE
+func (level_data LevelsData) Create() {
 	db := connection.Connect_db()
 
 	level_data.Delete()
@@ -30,10 +31,10 @@ func (level_data LevelsData) CreateOrUpdate() {
 	defer db.Close()
 }
 
-func (level_data *LevelsData) Read(id int) {
+func (level_data *LevelsData) Read() {
 	db := connection.Connect_db()
 	err := db.QueryRow("SELECT id, wide_description, code, question, answer FROM LevelsData where id = ?",
-		id).
+		level_data.ID).
 		Scan(&level_data.ID,
 			&level_data.WideDescription,
 			&level_data.Code,
@@ -50,7 +51,8 @@ func (level_data LevelsData) Update() {
 	db := connection.Connect_db()
 
 	var old_level_data LevelsData
-	old_level_data.Read(level_data.ID) // existence check
+	old_level_data.ID = level_data.ID
+	old_level_data.Read() // existence check
 
 	_, err := db.Query("UPDATE LevelsData SET "+
 		"wide_description = ?, code = ?, question = ?, answer = ? "+
