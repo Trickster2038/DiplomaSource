@@ -16,6 +16,7 @@ import (
 
 	"crud/levelsbrief"
 	"crud/levelsdata"
+	"crud/solutionefforts"
 )
 
 func main() {
@@ -40,6 +41,13 @@ func main() {
 		// level_data.CreateOrUpdate()
 
 		level_data.Update()
+
+		var eff solutionefforts.SolutionEffort
+		eff.UserID = 1
+		eff.LevelID = 7
+		eff.IsSuccessful = true
+
+		eff.Create()
 
 		exec.Command("fuser", "-k", "8082/tcp").Output()
 		http.ListenAndServe(":8082", r)

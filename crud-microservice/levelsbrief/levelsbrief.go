@@ -11,7 +11,7 @@ type LevelsBrief struct {
 	Cost       int    `json:"cost"`
 	Is_active  bool   `json:"is_active"`
 	Name       string `json:"name"`
-	Brief      string `json:"brief, omitempty"`
+	Brief      string `json:"brief"`
 }
 
 // returns MaxId (current for creating LevelsData)
@@ -103,6 +103,7 @@ func (level_brief LevelsBrief) Update() {
 		panic(err.Error())
 	}
 
+	defer db.Close()
 }
 
 // setting is_active = FALSE
@@ -123,9 +124,10 @@ func (level_brief LevelsBrief) Delete() {
 			panic(err.Error())
 		}
 	} else {
-		panic("already deleted (archived)")
+		panic("Level is already deleted (archived)")
 	}
 
+	defer db.Close()
 }
 
 func (level_brief LevelsBrief) ReadAll() []LevelsBrief {
