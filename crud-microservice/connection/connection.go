@@ -8,7 +8,7 @@ import (
 
 func Connect_db() *sql.DB {
 	password := os.Getenv("MYSQL_PASS")
-	db, err := sql.Open("mysql", fmt.Sprintf("db_user:%s@tcp(0.0.0.0:8089)/levels", password))
+	db, err := sql.Open("mysql", fmt.Sprintf("db_user:%s@tcp(mysqldb:3306)/levels", password))
 
 	if err != nil {
 		panic(err.Error())

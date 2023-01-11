@@ -23,3 +23,10 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
+  crud:
+    build: ./crud-microservice
+    ports:
+      - "8082:8082"
+      # Connection: "db_user:%s@tcp(mysqldb:3306)/levels"
+    environment:
+      MYSQL_PASS: ${MYSQL_PASS}
