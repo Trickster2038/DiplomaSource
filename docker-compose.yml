@@ -30,3 +30,7 @@ services:
       # Connection: "db_user:%s@tcp(mysqldb:3306)/levels"
     environment:
       MYSQL_PASS: ${MYSQL_PASS}
+  analyzer:
+    build: ./analyzer-microservice
+    ports:
+      - "8083:8083"
