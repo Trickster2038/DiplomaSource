@@ -11,8 +11,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// TODO: progrma check support
-
 type TypeSelector struct {
 	Type string `json:"type"`
 }
@@ -41,6 +39,20 @@ type MultiChoiceTestRequest struct {
 	} `json:"data"`
 }
 
+type WavedromSignal struct {
+	Name string   `json:"name"`
+	Wave string   `json:"wave"`
+	Data []string `json:"data"`
+}
+
+type CodeRequest struct {
+	Type string `json:"type"`
+	Data struct {
+		UserSignals    []WavedromSignal `json:"user_signals"`
+		CorrectSignals []WavedromSignal `json:"correct_signals"`
+	} `json:"data"`
+}
+
 type SingleChoiceTestResult struct {
 	Hint string `json:"hint"`
 }
@@ -50,8 +62,9 @@ type MultiChoiceTestResult struct {
 	FalseNegative bool `json:"false_negative"`
 }
 
-type ICheckable interface {
-	Check() (bool, interface{})
+type CodeResult struct {
+	MissingSignals     []string `json:"missing_signals"`
+	MismatchingSignals []string `json:"mismatching_signals"`
 }
 
 type ResponseFrame struct {
@@ -60,6 +73,10 @@ type ResponseFrame struct {
 	Message    string      `json:"message, omitempty"`
 	IsCorrect  bool        `json:"is_correct"`
 	Data       interface{} `json:"data"`
+}
+
+type ICheckable interface {
+	Check() (bool, interface{})
 }
 
 func (v SingleChoiceTestRequest) Check() (bool, interface{}) {
@@ -92,6 +109,50 @@ func (v MultiChoiceTestRequest) Check() (bool, interface{}) {
 	var res MultiChoiceTestResult
 	res.FalsePositive = false_positive
 	res.FalseNegative = false_negative
+	return fl, res
+}
+
+func (v CodeRequest) Check() (bool, interface{}) {
+	var fl bool
+	var res CodeResult
+	fl = true
+
+	for _, signal_correct := range v.Data.CorrectSignals {
+		var entry_fl bool
+		entry_fl = false
+		var signal_user_buf WavedromSignal
+		for _, signal_user := range v.Data.UserSignals {
+			if signal_correct.Name == signal_user.Name {
+				entry_fl = true
+				signal_user_buf = signal_user
+			}
+		}
+		if entry_fl {
+			var equality_fl bool
+			equality_fl = true
+			if signal_correct.Wave != signal_user_buf.Wave {
+				equality_fl = false
+			}
+			if len(signal_correct.Data) != len(signal_user_buf.Data) {
+				equality_fl = false
+			} else {
+				for i, _ := range signal_correct.Data {
+					if signal_correct.Data[i] != signal_user_buf.Data[i] {
+						equality_fl = false
+						break
+					}
+				}
+			}
+			if !equality_fl {
+				res.MismatchingSignals = append(res.MismatchingSignals, signal_correct.Name)
+				fl = false
+			}
+		} else {
+			res.MissingSignals = append(res.MissingSignals, signal_correct.Name)
+			fl = false
+		}
+	}
+
 	return fl, res
 }
 
@@ -133,6 +194,9 @@ func check(w http.ResponseWriter, req *http.Request) {
 		err = json.Unmarshal(reqBody, data)
 	} else if type_selector.Type == "multichoice_test" {
 		data = &MultiChoiceTestRequest{}
+		err = json.Unmarshal(reqBody, data)
+	} else if type_selector.Type == "code" {
+		data = &CodeRequest{}
 		err = json.Unmarshal(reqBody, data)
 	} else {
 		panic("Unknown task type")
