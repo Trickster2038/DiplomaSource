@@ -18,12 +18,14 @@ import (
 	"crud/user"
 )
 
+// TODO: ReadAll() for TypeRecord?
+
 type MetaInfo struct {
 	Obj_type string `json:"obj_type"`
 	Action   string `json:"action"`
 }
 
-type EncapsuledMetaInfo struct {
+type EncapsulatedMetaInfo struct {
 	MetaInfo MetaInfo `json:"metainfo"`
 }
 
@@ -167,7 +169,7 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	}()
 
 	reqBody, _ := ioutil.ReadAll(req.Body)
-	var reqFrame EncapsuledMetaInfo
+	var reqFrame EncapsulatedMetaInfo
 
 	err = json.Unmarshal(reqBody, &reqFrame)
 

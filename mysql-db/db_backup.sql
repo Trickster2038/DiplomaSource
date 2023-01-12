@@ -132,6 +132,7 @@ DROP TABLE IF EXISTS `Users`;
 CREATE TABLE `Users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nickname` varchar(30) NOT NULL,
+  `is_admin` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -142,7 +143,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (1,'Deni'),(2,'David'),(3,'Mark');
+INSERT INTO `Users` VALUES (1,'Deni', 1),(2,'David', 0),(3,'Mark', 0);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
