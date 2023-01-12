@@ -31,8 +31,8 @@ type LevelsList struct {
 	Levels []levelsbrief.LevelsBrief `json:"levels"`
 }
 
-type EncapsulatedSuccesfull struct {
-	Succesful bool `json:"succesfull"`
+type EncapsulatedSuccessful struct {
+	Successful bool `json:"successful"`
 }
 
 type RfLevelsBrief struct {
@@ -105,8 +105,8 @@ func (v RfSolutionEffort) Create() {
 }
 
 func (v RfSolutionEffort) CheckSuccessful() interface{} {
-	var m EncapsulatedSuccesfull
-	m.Succesful = v.Data.CheckSuccessful()
+	var m EncapsulatedSuccessful
+	m.Successful = v.Data.CheckSuccessful()
 	return m
 }
 
@@ -140,28 +140,8 @@ type IDeletable interface {
 	Delete()
 }
 
-type ICheackableSuccessful interface {
+type ICheckableSuccessful interface {
 	CheckSuccessful() interface{}
-}
-
-func Create(v ICreatable) {
-	v.Create()
-}
-
-func Read(v IReadable) {
-	v.Read()
-}
-
-func ReadAll(v IReadableAll) {
-	v.ReadAll()
-}
-
-func Update(v IUpdatable) {
-	v.Update()
-}
-
-func Delete(v IDeletable) {
-	v.Delete()
 }
 
 type ResponseFrame struct {
@@ -248,8 +228,8 @@ func crud(w http.ResponseWriter, req *http.Request) {
 		data.(IDeletable).Delete()
 	} else if reqFrame.MetaInfo.Action == "read_all" {
 		response.Data = data.(IReadableAll).ReadAll()
-	} else if reqFrame.MetaInfo.Action == "check_succesful" {
-		response.Data = data.(ICheackableSuccessful).CheckSuccessful()
+	} else if reqFrame.MetaInfo.Action == "check_successful" {
+		response.Data = data.(ICheckableSuccessful).CheckSuccessful()
 	} else {
 		panic("Unknown Action")
 	}
