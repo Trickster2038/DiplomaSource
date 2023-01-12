@@ -49,10 +49,10 @@ type SingleValueDump struct {
 }
 
 type ResponseFrame struct {
-	Status_str  string    `json:"status_str"`
-	Status_code int       `json:"status_code"`
-	Message     string    `json:"message,omitempty"`
-	Wavedrom    WD_Struct `json:"wavedrom,omitempty"`
+	StatusStr  string    `json:"status_str"`
+	StatusCode int       `json:"status_code"`
+	Message    string    `json:"message,omitempty"`
+	Wavedrom   WD_Struct `json:"wavedrom,omitempty"`
 }
 
 // FIXME: more effective algorithm
@@ -161,10 +161,10 @@ func wavedrom(w http.ResponseWriter, req *http.Request) {
 	defer func() {
 		if panicInfo := recover(); panicInfo != nil {
 			var response ResponseFrame
-			response.Status_str = "error"
-			response.Status_code = 400
+			response.StatusStr = "error"
+			response.StatusCode = 400
 			response.Message = fmt.Sprintf("Top-level panic: %v", panicInfo)
-			w.WriteHeader(response.Status_code)
+			w.WriteHeader(response.StatusCode)
 			json.NewEncoder(w).Encode(response)
 		}
 	}()
@@ -177,20 +177,20 @@ func wavedrom(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = err.Error()
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
 		panic("JSON parsing error")
 	}
 
-	response.Status_str = "ok"
-	response.Status_code = 200
+	response.StatusStr = "ok"
+	response.StatusCode = 200
 	response.Wavedrom = reqVCD.encodeWD(3, 1)
-	w.WriteHeader(response.Status_code)
+	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
 

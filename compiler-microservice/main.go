@@ -21,8 +21,8 @@ type SourceFiles struct {
 }
 
 type ResponseFrame struct {
-	Status_str        string `json:"status_str"`
-	Status_code       int    `json:"status_code"`
+	StatusStr         string `json:"status_str"`
+	StatusCode        int    `json:"status_code"`
 	Message           string `json:"message, omitempty"`
 	Value_change_dump string `json:"value_change_dump, omitempty"`
 }
@@ -74,10 +74,10 @@ func build(w http.ResponseWriter, req *http.Request) {
 	defer func() {
 		if panicInfo := recover(); panicInfo != nil {
 			var response ResponseFrame
-			response.Status_str = "error"
-			response.Status_code = 400
+			response.StatusStr = "error"
+			response.StatusCode = 400
 			response.Message = fmt.Sprintf("Top-level panic: %v", panicInfo)
-			w.WriteHeader(response.Status_code)
+			w.WriteHeader(response.StatusCode)
 			json.NewEncoder(w).Encode(response)
 		}
 	}()
@@ -89,10 +89,10 @@ func build(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = err.Error()
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -103,10 +103,10 @@ func build(w http.ResponseWriter, req *http.Request) {
 	if !r.MatchString(dataFrame.Tb_src) {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = "testbench without \"$dumpvars\""
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -125,10 +125,10 @@ func build(w http.ResponseWriter, req *http.Request) {
 	if err_int != 0 {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = "writing files error"
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -146,14 +146,14 @@ func build(w http.ResponseWriter, req *http.Request) {
 	if err_int != 0 {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				if err_int == 1 {
 					response.Message = "synthethis error"
 				} else {
 					response.Message = "simulation error"
 				}
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -163,11 +163,11 @@ func build(w http.ResponseWriter, req *http.Request) {
 	value_change_dump, _ := os.ReadFile(dataFrame.User_id + "/" +
 		dataFrame.Level_id + "/device.vcd")
 
-	response.Status_str = "ok"
-	response.Status_code = 200
+	response.StatusStr = "ok"
+	response.StatusCode = 200
 	response.Message = "compiled successfully"
 	response.Value_change_dump = string(value_change_dump)
-	w.WriteHeader(response.Status_code)
+	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
 

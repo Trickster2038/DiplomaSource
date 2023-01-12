@@ -147,10 +147,10 @@ type ICheckableSuccessful interface {
 }
 
 type ResponseFrame struct {
-	Status_str  string      `json:"status_str"`
-	Status_code int         `json:"status_code"`
-	Message     string      `json:"message,omitempty"`
-	Data        interface{} `json:"data,omitempty"`
+	StatusStr  string      `json:"status_str"`
+	StatusCode int         `json:"status_code"`
+	Message    string      `json:"message,omitempty"`
+	Data       interface{} `json:"data,omitempty"`
 }
 
 func crud(w http.ResponseWriter, req *http.Request) {
@@ -160,10 +160,10 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	defer func() {
 		if panicInfo := recover(); panicInfo != nil {
 			var response ResponseFrame
-			response.Status_str = "error"
-			response.Status_code = 400
+			response.StatusStr = "error"
+			response.StatusCode = 400
 			response.Message = fmt.Sprintf("Top-level panic: %v", panicInfo)
-			w.WriteHeader(response.Status_code)
+			w.WriteHeader(response.StatusCode)
 			json.NewEncoder(w).Encode(response)
 		}
 	}()
@@ -176,10 +176,10 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = err.Error()
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -210,10 +210,10 @@ func crud(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		defer func() {
 			if r := recover(); r != nil {
-				response.Status_str = "error"
-				response.Status_code = 400
+				response.StatusStr = "error"
+				response.StatusCode = 400
 				response.Message = err.Error()
-				w.WriteHeader(response.Status_code)
+				w.WriteHeader(response.StatusCode)
 				json.NewEncoder(w).Encode(response)
 			}
 		}()
@@ -236,9 +236,9 @@ func crud(w http.ResponseWriter, req *http.Request) {
 		panic("Unknown Action")
 	}
 
-	response.Status_str = "ok"
-	response.Status_code = 200
-	w.WriteHeader(response.Status_code)
+	response.StatusStr = "ok"
+	response.StatusCode = 200
+	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
 
