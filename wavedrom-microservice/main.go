@@ -40,7 +40,7 @@ type WD_Signal struct {
 }
 
 type WD_Struct struct {
-	Signal []WD_Signal `json:"signal"`
+	Signals []WD_Signal `json:"signal"`
 }
 
 type SingleValueDump struct {
@@ -49,10 +49,10 @@ type SingleValueDump struct {
 }
 
 type ResponseFrame struct {
-	StatusStr  string    `json:"status_str"`
-	StatusCode int       `json:"status_code"`
-	Message    string    `json:"message,omitempty"`
-	Wavedrom   WD_Struct `json:"wavedrom,omitempty"`
+	StatusStr  string      `json:"status_str"`
+	StatusCode int         `json:"status_code"`
+	Message    string      `json:"message,omitempty"`
+	Signals    []WD_Signal `json:"signals,omitempty"`
 }
 
 // FIXME: more effective algorithm
@@ -150,7 +150,7 @@ func (vcdFrame VCD_Struct) encodeWD(end_scale int, width_scale int) WD_Struct {
 		if len(data[name]) != 0 {
 			wd_data = data[name]
 		}
-		wavedrom.Signal = append(wavedrom.Signal, WD_Signal{name, waves[name], wd_data})
+		wavedrom.Signals = append(wavedrom.Signals, WD_Signal{name, waves[name], wd_data})
 	}
 	return wavedrom
 }
@@ -189,7 +189,7 @@ func wavedrom(w http.ResponseWriter, req *http.Request) {
 
 	response.StatusStr = "ok"
 	response.StatusCode = 200
-	response.Wavedrom = reqVCD.encodeWD(3, 1)
+	response.Signals = reqVCD.encodeWD(3, 1).Signals
 	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
