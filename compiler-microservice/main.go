@@ -9,15 +9,16 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 type SourceFiles struct {
-	User_id    string `json:"user_id"`
-	Level_id   string `json:"level_id"`
-	Device_src string `json:"device_src"`
-	Tb_src     string `json:"tb_src"`
+	UserID    int    `json:"user_id"`
+	LevelID   int    `json:"level_id"`
+	DeviceSrc string `json:"device_src"`
+	TbSrc     string `json:"tb_src"`
 }
 
 type ResponseFrame struct {
@@ -27,21 +28,21 @@ type ResponseFrame struct {
 	Value_change_dump string `json:"value_change_dump, omitempty"`
 }
 
-func add_dump_macros(user_id string, level_id string, tb_src string) string {
+func add_dump_macros(user_id int, level_id int, tb_src string) string {
 	var r = regexp.MustCompile(`\$dumpfile\(.*\);`)
 	s := r.ReplaceAllString(tb_src, ``)
 	r = regexp.MustCompile(`\$dumpvars;`)
-	s = r.ReplaceAllString(s, "$$dumpfile(\""+
-		user_id+"/"+level_id+"/device"+
+	s = r.ReplaceAllString(s, "$$dumpfile(\""+"user"+
+		strconv.Itoa(user_id)+"/level"+strconv.Itoa(level_id)+"/device"+
 		".vcd\");\n$$dumpvars;")
 	return s
 }
 
-func create_or_update(user_id string, level_id string, device_src string, tb_src string) int {
-	os.MkdirAll((user_id + "/" + level_id), 0777)
-	f, err1 := os.Create((user_id + "/" + level_id + "/device.v"))
+func create_or_update(user_id int, level_id int, device_src string, tb_src string) int {
+	os.MkdirAll(("user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id)), 0777)
+	f, err1 := os.Create(("user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id) + "/device.v"))
 	_, err2 := f.WriteString(device_src)
-	f, err3 := os.Create((user_id + "/" + level_id + "/tb.v"))
+	f, err3 := os.Create(("user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id) + "/tb.v"))
 	_, err4 := f.WriteString(tb_src)
 	if (err1 != nil) || (err2 != nil) || (err3 != nil) || (err4 != nil) {
 		return 1
@@ -49,10 +50,10 @@ func create_or_update(user_id string, level_id string, device_src string, tb_src
 	return 0
 }
 
-func compile_and_visualise(user_id string, level_id string) int {
-	device_path := user_id + "/" + level_id + "/device.v"
-	tb_path := user_id + "/" + level_id + "/tb.v"
-	out_path := user_id + "/" + level_id + "/device"
+func compile_and_visualise(user_id int, level_id int) int {
+	device_path := "user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id) + "/device.v"
+	tb_path := "user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id) + "/tb.v"
+	out_path := "user" + strconv.Itoa(user_id) + "/level" + strconv.Itoa(level_id) + "/device"
 
 	_, err := exec.Command("/bin/sh", "-c", ("iverilog -o " + out_path + " " + device_path + " " + tb_path)).Output()
 	if err != nil {
@@ -100,7 +101,7 @@ func build(w http.ResponseWriter, req *http.Request) {
 	}
 
 	r := regexp.MustCompile(`.*\$dumpvars;.*`)
-	if !r.MatchString(dataFrame.Tb_src) {
+	if !r.MatchString(dataFrame.TbSrc) {
 		defer func() {
 			if r := recover(); r != nil {
 				response.StatusStr = "error"
@@ -114,14 +115,14 @@ func build(w http.ResponseWriter, req *http.Request) {
 	}
 
 	defer func() {
-		os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
+		os.RemoveAll("user" + strconv.Itoa(dataFrame.UserID) + "/level" + strconv.Itoa(dataFrame.LevelID))
 	}()
 
-	dataFrame.Tb_src = add_dump_macros(dataFrame.User_id,
-		dataFrame.Level_id, dataFrame.Tb_src)
+	dataFrame.TbSrc = add_dump_macros(dataFrame.UserID,
+		dataFrame.LevelID, dataFrame.TbSrc)
 
-	err_int := create_or_update(dataFrame.User_id, dataFrame.Level_id,
-		dataFrame.Device_src, dataFrame.Tb_src)
+	err_int := create_or_update(dataFrame.UserID, dataFrame.LevelID,
+		dataFrame.DeviceSrc, dataFrame.TbSrc)
 	if err_int != 0 {
 		defer func() {
 			if r := recover(); r != nil {
@@ -136,13 +137,13 @@ func build(w http.ResponseWriter, req *http.Request) {
 	}
 
 	defer func() {
-		err := os.RemoveAll(dataFrame.User_id + "/" + dataFrame.Level_id)
+		err := os.RemoveAll("user" + strconv.Itoa(dataFrame.UserID) + "/level" + strconv.Itoa(dataFrame.LevelID))
 		if err != nil {
 			fmt.Printf("error: %s", err)
 		}
 	}()
 
-	err_int = compile_and_visualise(dataFrame.User_id, dataFrame.Level_id)
+	err_int = compile_and_visualise(dataFrame.UserID, dataFrame.LevelID)
 	if err_int != 0 {
 		defer func() {
 			if r := recover(); r != nil {
@@ -160,8 +161,8 @@ func build(w http.ResponseWriter, req *http.Request) {
 		panic("Simulation error")
 	}
 
-	value_change_dump, _ := os.ReadFile(dataFrame.User_id + "/" +
-		dataFrame.Level_id + "/device.vcd")
+	value_change_dump, _ := os.ReadFile("user" + strconv.Itoa(dataFrame.UserID) + "/level" +
+		strconv.Itoa(dataFrame.LevelID) + "/device.vcd")
 
 	response.StatusStr = "ok"
 	response.StatusCode = 200
