@@ -117,6 +117,10 @@ func (v RfTypeRecord) Read() interface{} {
 	return v.Data
 }
 
+func (v RfUser) Create() {
+	v.Data.Create()
+}
+
 func (v RfUser) Read() interface{} {
 	v.Data.Read()
 	return v.Data
