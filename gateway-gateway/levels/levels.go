@@ -58,14 +58,17 @@ type OutRequestWavedrom struct {
 	Data interface{} `json:"data"`
 }
 
-// FIXME: compilation and parsing for LevelsData
+type CodeLevelFlagFrame struct {
+	IsCodeLevel bool `json:"is_code_level"`
+}
 
-func handle_code_level_data(req InRequestLevelsCodeData) string {
+// Returns string(wavedrom.json)
+func Handle_code_level_data(user_id int, level_id int, src string, tb string) string {
 	var out_req_src OutRequestCompiler
-	out_req_src.UserID = req.UserID
-	out_req_src.LevelID = req.Data.ID
-	out_req_src.DeviceSrc = req.Data.Question.Src
-	out_req_src.TbSrc = req.Data.Question.Tb
+	out_req_src.UserID = user_id
+	out_req_src.LevelID = level_id
+	out_req_src.DeviceSrc = src
+	out_req_src.TbSrc = tb
 
 	payload, _ := json.Marshal(out_req_src)
 	resp, err_post := http.Post("http://compiler-microservice:8080/build", "application/json", bytes.NewBuffer(payload))
@@ -81,11 +84,9 @@ func handle_code_level_data(req InRequestLevelsCodeData) string {
 	} else {
 		var out_req_parser OutRequestParser
 
-		out_req_parser.UserID = req.UserID
-		out_req_parser.LevelID = req.Data.ID
+		out_req_parser.UserID = user_id
+		out_req_parser.LevelID = level_id
 		out_req_parser.Data = res.Data
-
-		// panic(fmt.Sprintf("Parser payload %v", out_req_parser))
 
 		payload, _ := json.Marshal(out_req_parser)
 		resp, err_post := http.Post("http://parser-microservice:5000/parse", "application/json", bytes.NewBuffer(payload))
@@ -96,8 +97,6 @@ func handle_code_level_data(req InRequestLevelsCodeData) string {
 
 		var res request.ResponseFrame
 		json.NewDecoder(resp.Body).Decode(&res)
-
-		// panic(fmt.Sprintf("WD payload %v", res.Data))
 
 		if res.StatusStr != "ok" {
 			panic("Device parsing error")
@@ -116,12 +115,9 @@ func handle_code_level_data(req InRequestLevelsCodeData) string {
 			json.NewDecoder(resp.Body).Decode(&res)
 
 			if res.StatusStr != "ok" {
-
-				//FIXME:
-				panic(fmt.Sprintf("Time diagram wavedroming error, payload %v", res.Data))
+				panic("Time diagram wavedroming error")
 			} else {
 				res_marshal, _ := json.Marshal(res.Data)
-				// return fmt.Sprintf("%v", res.Data)
 				return string(res_marshal)
 			}
 		}
@@ -255,7 +251,10 @@ func Crud_levels(w http.ResponseWriter, req *http.Request) {
 		code_level_data_str.Data.WideDescription = code_level_data.Data.WideDescription
 		code_level_data_str.Data.Code = code_level_data.Data.Code
 		code_level_data_str.Data.Question = code_level_data.Data.Question.Tb
-		code_level_data_str.Data.Answer = handle_code_level_data(code_level_data)
+		code_level_data_str.Data.Answer = Handle_code_level_data(code_level_data.UserID,
+			code_level_data.Data.ID,
+			code_level_data.Data.Question.Src,
+			code_level_data.Data.Question.Tb)
 
 		payload, err = json.Marshal(code_level_data_str)
 		if err != nil {

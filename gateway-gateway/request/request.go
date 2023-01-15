@@ -31,7 +31,3 @@ type AdminFlagFrame struct {
 		IsAdmin bool `json:"is_admin"`
 	} `json:"data"`
 }
-
-type CodeLevelFlagFrame struct {
-	IsCodeLevel bool `json:"is_code_level"`
-}
