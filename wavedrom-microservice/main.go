@@ -30,7 +30,7 @@ type VCD_Struct struct {
 			Width int    `json:"width"`
 		} `json:"type"`
 		Data [][]interface{} `json:"data"`
-	} `json:"vcd_parsed"`
+	} `json:"data"`
 }
 
 type WD_Signal struct {
@@ -52,7 +52,7 @@ type ResponseFrame struct {
 	StatusStr  string      `json:"status_str"`
 	StatusCode int         `json:"status_code"`
 	Message    string      `json:"message,omitempty"`
-	Signals    []WD_Signal `json:"signals,omitempty"`
+	Signals    []WD_Signal `json:"data,omitempty"`
 }
 
 // FIXME: more effective algorithm

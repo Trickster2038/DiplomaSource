@@ -24,7 +24,7 @@ func Crud_user(w http.ResponseWriter, req *http.Request) {
 	}()
 
 	reqBody, _ := ioutil.ReadAll(req.Body)
-	var dataFrame request.InRequsestCRUD
+	var dataFrame request.InRequestCRUD
 
 	err := json.Unmarshal(reqBody, &dataFrame)
 

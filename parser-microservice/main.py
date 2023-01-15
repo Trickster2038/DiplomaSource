@@ -32,7 +32,7 @@ def parse_handler():
     if (content_type == 'application/json'):
         req = request.json
         if not (("user_id" in req) and ("level_id" in req)
-                and ("value_change_dump" in req)):
+                and ("data" in req)):
             return {
                 "status_str": "error",
                 "status_code": 400,
@@ -41,12 +41,12 @@ def parse_handler():
         else:
             try:
                 vcd_parsed = parse_func(str(req["user_id"]), str(req["level_id"]),
-                                        str(req["value_change_dump"]))
+                                        str(req["data"]))
                 return {
                     "status_str": "ok",
                     "status_code": 200,
                     # FIXME (actual?): get only first child
-                    "vcd_parsed": list(filter(lambda signal: signal["type"]["name"] != "struct", vcd_parsed["children"][0]["children"]))
+                    "data": list(filter(lambda signal: signal["type"]["name"] != "struct", vcd_parsed["children"][0]["children"]))
                 }, 200
             except Exception as e:
                 return {

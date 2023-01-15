@@ -12,7 +12,7 @@ type MetaInfo struct {
 	Action  string `json:"action"`
 }
 
-type InRequsestCRUD struct {
+type InRequestCRUD struct {
 	UserID   int         `json:"user_id"`
 	MetaInfo MetaInfo    `json:"metainfo"`
 	Data     interface{} `json:"data"`
@@ -30,4 +30,8 @@ type AdminFlagFrame struct {
 	Data     struct {
 		IsAdmin bool `json:"is_admin"`
 	} `json:"data"`
+}
+
+type CodeLevelFlagFrame struct {
+	IsCodeLevel bool `json:"is_code_level"`
 }

@@ -22,10 +22,10 @@ type SourceFiles struct {
 }
 
 type ResponseFrame struct {
-	StatusStr         string `json:"status_str"`
-	StatusCode        int    `json:"status_code"`
-	Message           string `json:"message, omitempty"`
-	Value_change_dump string `json:"value_change_dump, omitempty"`
+	StatusStr  string `json:"status_str"`
+	StatusCode int    `json:"status_code"`
+	Message    string `json:"message, omitempty"`
+	Data       string `json:"data, omitempty"`
 }
 
 func add_dump_macros(user_id int, level_id int, tb_src string) string {
@@ -167,7 +167,7 @@ func build(w http.ResponseWriter, req *http.Request) {
 	response.StatusStr = "ok"
 	response.StatusCode = 200
 	response.Message = "compiled successfully"
-	response.Value_change_dump = string(value_change_dump)
+	response.Data = string(value_change_dump)
 	w.WriteHeader(response.StatusCode)
 	json.NewEncoder(w).Encode(response)
 }
