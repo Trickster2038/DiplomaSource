@@ -69,10 +69,30 @@ func Crud_levels(w http.ResponseWriter, req *http.Request) {
 		var res request.AdminFlagFrame
 		json.NewDecoder(resp.Body).Decode(&res)
 
-		if !res.IsAdmin {
+		if !res.Data.IsAdmin {
 			panic("User have no rights to modify levels")
-		} else {
-			
 		}
 	}
+
+	payload, err := json.Marshal(dataFrame)
+	resp, err_post := http.Post("http://crud-microservice:8082/crud", "application/json", bytes.NewBuffer(payload))
+
+	if err_post != nil {
+		panic(fmt.Sprintf("Accesing CRUD-microservice.Levels error: %v", err.Error()))
+	}
+
+	var res request.ResponseFrame
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	response.StatusStr = res.StatusStr
+	response.StatusCode = res.StatusCode
+	response.Data = res.Data
+	if res.StatusStr == "ok" {
+		response.Message = "CRUD operation with Level done"
+	} else {
+		response.Message = "CRUD-microservice.LevelsX error: " + res.Message
+	}
+	w.WriteHeader(response.StatusCode)
+	json.NewEncoder(w).Encode(response)
+
 }

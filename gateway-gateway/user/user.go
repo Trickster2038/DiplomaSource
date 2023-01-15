@@ -59,7 +59,7 @@ func Crud_user(w http.ResponseWriter, req *http.Request) {
 	response.StatusCode = res.StatusCode
 	response.Data = res.Data
 	if res.StatusStr == "ok" {
-		response.Message = "CRUD operation with user done"
+		response.Message = "CRUD operation with User done"
 	} else {
 		response.Message = "CRUD-microservice.User error: " + res.Message
 	}
