@@ -98,9 +98,14 @@ func (v RfLevelsData) Update() {
 	v.Data.Update()
 }
 
+/*
+
+Always just archive
+
 func (v RfLevelsData) Delete() {
 	v.Data.Delete()
 }
+*/
 
 func (v RfSolutionEffort) Create() {
 	v.Data.Create()
@@ -114,6 +119,11 @@ func (v RfSolutionEffort) CheckSuccessful() interface{} {
 
 func (v RfTypeRecord) Read() interface{} {
 	v.Data.Read()
+	return v.Data
+}
+
+func (v RfTypeRecord) ReadByName() interface{} {
+	v.Data.ReadByName()
 	return v.Data
 }
 
@@ -132,6 +142,10 @@ type ICreatable interface {
 
 type IReadable interface {
 	Read() interface{}
+}
+
+type IReadableByName interface {
+	ReadByName() interface{}
 }
 
 type IReadableAll interface {
@@ -232,6 +246,8 @@ func crud(w http.ResponseWriter, req *http.Request) {
 		data.(IUpdatable).Update()
 	} else if reqFrame.MetaInfo.Action == "delete" {
 		data.(IDeletable).Delete()
+	} else if reqFrame.MetaInfo.Action == "read_by_name" {
+		response.Data = data.(IReadableByName).ReadByName()
 	} else if reqFrame.MetaInfo.Action == "read_all" {
 		response.Data = data.(IReadableAll).ReadAll()
 	} else if reqFrame.MetaInfo.Action == "check_successful" {

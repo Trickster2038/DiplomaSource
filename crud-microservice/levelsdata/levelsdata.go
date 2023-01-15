@@ -12,11 +12,10 @@ type LevelsData struct {
 	Answer          string `json:"answer"`
 }
 
-// Create OR UPDATE
 func (level_data LevelsData) Create() {
 	db := connection.Connect_db()
 
-	level_data.Delete()
+	// level_data.Delete()
 
 	_, err := db.Query("INSERT INTO LevelsData (id, wide_description, code, question, answer) VALUES (?, ?, ?, ?, ?)",
 		level_data.ID,
@@ -69,6 +68,10 @@ func (level_data LevelsData) Update() {
 	defer db.Close()
 }
 
+/*
+
+Always just archive
+
 func (level_data LevelsData) Delete() {
 	db := connection.Connect_db()
 
@@ -82,3 +85,4 @@ func (level_data LevelsData) Delete() {
 
 	defer db.Close()
 }
+*/

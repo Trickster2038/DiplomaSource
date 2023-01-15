@@ -118,7 +118,7 @@ CREATE TABLE `Types` (
 
 LOCK TABLES `Types` WRITE;
 /*!40000 ALTER TABLE `Types` DISABLE KEYS */;
-INSERT INTO `Types` VALUES (1,'test'),(2,'program'),(3,'text');
+INSERT INTO `Types` VALUES (1,'text'),(2,'singlechoice_test'),(2,'multichoice_test'),(3,'program');
 /*!40000 ALTER TABLE `Types` ENABLE KEYS */;
 UNLOCK TABLES;
 

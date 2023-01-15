@@ -5,13 +5,14 @@ import (
 )
 
 type LevelsBrief struct {
-	ID         int    `json:"id"`
-	Level_type int    `json:"level_type"`
-	Seqnum     int    `json:"seqnum"`
-	Cost       int    `json:"cost"`
-	Is_active  bool   `json:"is_active"`
-	Name       string `json:"name"`
-	Brief      string `json:"brief"`
+	ID              int    `json:"id"`
+	Level_type      int    `json:"level_type"`
+	Seqnum          int    `json:"seqnum"`
+	Cost            int    `json:"cost"`
+	Is_active       bool   `json:"is_active"`
+	Name            string `json:"name"`
+	Brief           string `json:"brief"`
+	Level_type_name string `json:"level_type_name"`
 }
 
 // TODO: MaxId returning func
@@ -39,7 +40,7 @@ func (level_brief LevelsBrief) Create() {
 
 func (level_brief *LevelsBrief) Read() {
 	db := connection.Connect_db()
-	err := db.QueryRow("SELECT id, level_type, seqnum, cost, is_active, name, brief FROM LevelsBrief where id = ?",
+	err := db.QueryRow("SELECT LevelsBrief.id, level_type, seqnum, cost, is_active, LevelsBrief.name, brief, Types.name as level_type_name FROM LevelsBrief, Types where LevelsBrief.id = ? AND LevelsBrief.level_type = Types.id",
 		level_brief.ID).
 		Scan(&level_brief.ID,
 			&level_brief.Level_type,
@@ -47,7 +48,8 @@ func (level_brief *LevelsBrief) Read() {
 			&level_brief.Cost,
 			&level_brief.Is_active,
 			&level_brief.Name,
-			&level_brief.Brief)
+			&level_brief.Brief,
+			&level_brief.Level_type_name)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -128,7 +130,7 @@ func (level_brief LevelsBrief) ReadAll() []LevelsBrief {
 
 	db := connection.Connect_db()
 
-	results, err := db.Query("SELECT id, level_type, seqnum, cost, is_active, name, brief FROM LevelsBrief")
+	results, err := db.Query("SELECT LevelsBrief.id, level_type, seqnum, cost, is_active, LevelsBrief.name, brief, Types.name as level_type_name FROM LevelsBrief, Types WHERE LevelsBrief.level_type = Types.id")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -141,7 +143,8 @@ func (level_brief LevelsBrief) ReadAll() []LevelsBrief {
 			&level_brief.Cost,
 			&level_brief.Is_active,
 			&level_brief.Name,
-			&level_brief.Brief)
+			&level_brief.Brief,
+			&level_brief.Level_type_name)
 		if err != nil {
 			panic(err.Error())
 		}
