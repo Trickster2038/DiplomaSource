@@ -7,11 +7,27 @@ type ResponseFrame struct {
 	Data       interface{} `json:"data,omitempty"`
 }
 
+type MetaInfo struct {
+	ObjType string `json:"obj_type"`
+	Action  string `json:"action"`
+}
+
 type InRequsestCRUD struct {
-	UserID   int `json:"user_id"`
-	MetaInfo struct {
-		ObjType string `json:"obj_type"`
-		Action  string `json:"action"`
-	} `json:"metainfo"`
-	Data interface{} `json:"data"`
+	UserID   int         `json:"user_id"`
+	MetaInfo MetaInfo    `json:"metainfo"`
+	Data     interface{} `json:"data"`
+}
+
+type IdRequestFrame struct {
+	MetaInfo MetaInfo `json:"metainfo"`
+	Data     struct {
+		ID int `json:"id"`
+	} `json:"data"`
+}
+
+type AdminFlagFrame struct {
+	MetaInfo MetaInfo `json:"metainfo"`
+	Data     struct {
+		IsAdmin bool `json:"is_admin"`
+	} `json:"data"`
 }

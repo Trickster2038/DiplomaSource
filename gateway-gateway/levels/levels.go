@@ -1,6 +1,7 @@
 package levels
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"gateway/request"
@@ -53,6 +54,25 @@ func Crud_levels(w http.ResponseWriter, req *http.Request) {
 	if (dataFrame.MetaInfo.Action == "create") ||
 		(dataFrame.MetaInfo.Action == "update") ||
 		(dataFrame.MetaInfo.Action == "delete") {
+		var payloadFrame request.IdRequestFrame
+		payloadFrame.MetaInfo.ObjType = "user"
+		payloadFrame.MetaInfo.Action = "read"
+		payloadFrame.Data.ID = dataFrame.UserID
 
+		payload, err := json.Marshal(payloadFrame)
+		resp, err_post := http.Post("http://crud-microservice:8082/crud", "application/json", bytes.NewBuffer(payload))
+
+		if err_post != nil {
+			panic(fmt.Sprintf("Accesing CRUD-microservice.User error: %v", err.Error()))
+		}
+
+		var res request.AdminFlagFrame
+		json.NewDecoder(resp.Body).Decode(&res)
+
+		if !res.IsAdmin {
+			panic("User have no rights to modify levels")
+		} else {
+			
+		}
 	}
 }

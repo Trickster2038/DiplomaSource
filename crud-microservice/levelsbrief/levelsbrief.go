@@ -2,6 +2,7 @@ package levelsbrief
 
 import (
 	"crud/connection"
+	"crud/typerecord"
 )
 
 type LevelsBrief struct {
@@ -15,6 +16,13 @@ type LevelsBrief struct {
 	Level_type_name string `json:"level_type_name"`
 }
 
+func (level_brief LevelsBrief) get_level_type_id() int {
+	var typerec typerecord.Type
+	typerec.Name = level_brief.Level_type_name
+	typerec.ReadByName()
+	return typerec.ID
+}
+
 // TODO: MaxId returning func
 func (level_brief LevelsBrief) Create() {
 	db := connection.Connect_db()
@@ -25,7 +33,7 @@ func (level_brief LevelsBrief) Create() {
 	}
 
 	_, err = db.Query("INSERT INTO LevelsBrief (level_type, seqnum, cost, is_active, name, brief) VALUES (?, ?, ?, ?, ?, ?)",
-		level_brief.Level_type,
+		level_brief.get_level_type_id(),
 		level_brief.Seqnum,
 		level_brief.Cost,
 		level_brief.Is_active,
@@ -86,7 +94,7 @@ func (level_brief LevelsBrief) Update() {
 		"name = ?, "+
 		"brief = ? "+
 		"WHERE id = ?",
-		level_brief.Level_type,
+		level_brief.get_level_type_id(),
 		level_brief.Seqnum,
 		level_brief.Cost,
 		level_brief.Is_active,
