@@ -120,7 +120,9 @@ func handle_code_level_data(req InRequestLevelsCodeData) string {
 				//FIXME:
 				panic(fmt.Sprintf("Time diagram wavedroming error, payload %v", res.Data))
 			} else {
-				return fmt.Sprintf("%v", res.Data)
+				res_marshal, _ := json.Marshal(res.Data)
+				// return fmt.Sprintf("%v", res.Data)
+				return string(res_marshal)
 			}
 		}
 	}
