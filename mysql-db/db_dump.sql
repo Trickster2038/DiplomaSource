@@ -131,28 +131,28 @@ INSERT INTO
 VALUES
   (
     1,
-    'This is wide desr of code',
+    'This is wide descr of code',
     'Code example',
     'module adder_tb;  \n// Inputs  \nreg [3:0] A;  \nreg [3:0] B;  \nreg Cin;  \n// Outputs  \nwire [3:0] Sum;  \nwire Cout;  \n// Instantiate the Unit Under Test (UUT)  \nripple_adder_4bit uut (  \n.Sum(Sum),  \n.Cout(Cout),  \n.A(A),  \n.B(B),  \n.Cin(Cin)  \n);  \ninitial begin  \n// Initialize Inputs  \nA = 0;  \nB = 0;  \nCin = 0;  \n// Wait 100 ns for global reset to finish  \n#100;  \n// Add stimulus here  \nA=4\'b0001;B=4\'b0000;Cin=1\'b0;  \n#10 A=4\'b1010;B=4\'b0011;Cin=1\'b0;  \n#10 A=4\'b1101;B=4\'b1010;Cin=1\'b1;  \nend  \ninitial begin  \n$dumpfile(\"adder.vcd\");  \n$dumpvars;  \nend  \nendmodule\n',
     '[{\"data\":[\"b0\",\"b1\",\"b1101\",\"b1000\"],\"name\":\"Sum[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[],\"name\":\"Cout\",\"wave\":\"0.......................1.....\"},{\"data\":[\"b0\",\"b1\",\"b1010\",\"b1101\"],\"name\":\"A[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[\"b0\",\"b11\",\"b1010\"],\"name\":\"B[0:3]\",\"wave\":\"=.....................=.=.....\"},{\"data\":[],\"name\":\"Cin\",\"wave\":\"0.......................1.....\"}]'
   ),
   (
     2,
-    'This is wide desr of text',
+    'This is wide descr of text',
     'no code',
     'no question',
     'no answer'
   ),
   (
     3,
-    'This is wide desr of single',
+    'This is wide descr of single',
     'no code',
-    '{\"caption\":\"SingleChoice test\"\"answers\":[{\"text\":\"Умножение\",\"hint\":\"Название говорит само за себя\"},{\"text\":\"Вычитание\",\"hint\":\"Перечитай главу\"},{\"text\":\"Сложение\",\"hint\":\"Все верно\"}]}',
+    '{\"caption\":\"SingleChoice test\",\"answers\":[{\"text\":\"Умножение\",\"hint\":\"Название говорит само за себя\"},{\"text\":\"Вычитание\",\"hint\":\"Перечитай главу\"},{\"text\":\"Сложение\",\"hint\":\"Все верно\"}]}',
     '{\"correct_answer_id\":3}'
   ),
   (
     4,
-    'This is wide desr of multi',
+    'This is wide descr of multi',
     'no code',
     '{\"caption\":\"MultiChoice test\",\"answers\": [\"Variant 1\", \"Variant 2\"]}',
     '{\"correct_answers\": [true, true]}'

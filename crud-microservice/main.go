@@ -208,22 +208,19 @@ func crud(w http.ResponseWriter, req *http.Request) {
 
 	if reqFrame.MetaInfo.Obj_type == "levels_brief" {
 		data = &RfLevelsBrief{}
-		err = json.Unmarshal(reqBody, data)
 	} else if reqFrame.MetaInfo.Obj_type == "levels_data" {
 		data = &RfLevelsData{}
-		err = json.Unmarshal(reqBody, data)
 	} else if reqFrame.MetaInfo.Obj_type == "type_record" {
 		data = &RfTypeRecord{}
-		err = json.Unmarshal(reqBody, data)
 	} else if reqFrame.MetaInfo.Obj_type == "solution_effort" {
 		data = &RfSolutionEffort{}
-		err = json.Unmarshal(reqBody, data)
 	} else if reqFrame.MetaInfo.Obj_type == "user" {
 		data = &RfUser{}
-		err = json.Unmarshal(reqBody, data)
 	} else {
 		panic("Unknown Obj Type")
 	}
+
+	err = json.Unmarshal(reqBody, data)
 
 	if err != nil {
 		defer func() {

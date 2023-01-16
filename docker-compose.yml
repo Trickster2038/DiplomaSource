@@ -32,7 +32,6 @@ services:
       MYSQL_PASS: ${MYSQL_PASS}
   analyzer-microservice:
     build: ./analyzer-microservice
-    
     ports:
       - "8083:8083"
   gateway:
