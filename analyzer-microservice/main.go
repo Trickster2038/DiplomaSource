@@ -191,16 +191,15 @@ func check(w http.ResponseWriter, req *http.Request) {
 	var data interface{}
 	if type_selector.Type == "singlechoice_test" {
 		data = &SingleChoiceTestRequest{}
-		err = json.Unmarshal(reqBody, data)
 	} else if type_selector.Type == "multichoice_test" {
 		data = &MultiChoiceTestRequest{}
-		err = json.Unmarshal(reqBody, data)
 	} else if type_selector.Type == "code" {
 		data = &CodeRequest{}
-		err = json.Unmarshal(reqBody, data)
 	} else {
 		panic("Unknown task type")
 	}
+
+	err = json.Unmarshal(reqBody, data)
 
 	if err != nil {
 		defer func() {

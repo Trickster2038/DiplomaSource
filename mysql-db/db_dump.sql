@@ -154,7 +154,7 @@ VALUES
     4,
     'This is wide desr of multi',
     'no code',
-    '{\"correct_answers": [true, true]}',
+    '{\"caption\":\"MultiChoice test\",\"answers\": [\"Variant 1\", \"Variant 2\"]},\"correct_answers\": [true, true]}',
     '{\"user_answers\": [true, false]}'
   );
 
