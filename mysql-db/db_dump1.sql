@@ -40,7 +40,7 @@ CREATE TABLE `LevelsBrief` (
 
 LOCK TABLES `LevelsBrief` WRITE;
 /*!40000 ALTER TABLE `LevelsBrief` DISABLE KEYS */;
-INSERT INTO `LevelsBrief` VALUES (1,1,2,3,1,'Test level','Description there');
+INSERT INTO `LevelsBrief` VALUES (1,1,2,3,1,'Test level 123','Description there');
 /*!40000 ALTER TABLE `LevelsBrief` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +94,7 @@ CREATE TABLE `SolutionEfforts` (
 
 LOCK TABLES `SolutionEfforts` WRITE;
 /*!40000 ALTER TABLE `SolutionEfforts` DISABLE KEYS */;
-INSERT INTO `SolutionEfforts` VALUES (1,1,2,1,'2023-01-10 14:53:01'),(2,3,4,0,'2023-01-10 14:53:01');
+INSERT INTO `SolutionEfforts` VALUES (1,1,2,1,'2021-01-10 14:53:01'),(2,3,4,0,'2023-01-10 14:53:01');
 /*!40000 ALTER TABLE `SolutionEfforts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +118,7 @@ CREATE TABLE `Types` (
 
 LOCK TABLES `Types` WRITE;
 /*!40000 ALTER TABLE `Types` DISABLE KEYS */;
-INSERT INTO `Types` VALUES (1,'text'),(2,'singlechoice_test'),(2,'multichoice_test'),(3,'program');
+INSERT INTO `Types` VALUES (1,'text'),(2,'singlechoice_test'),(3,'multichoice_test'),(4,'program');
 /*!40000 ALTER TABLE `Types` ENABLE KEYS */;
 UNLOCK TABLES;
 

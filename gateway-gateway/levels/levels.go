@@ -191,7 +191,7 @@ func Crud_levels(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	var code_frame request.CodeLevelFlagFrame
+	var code_frame CodeLevelFlagFrame
 	err = json.Unmarshal(reqBody, &code_frame)
 
 	if err != nil {
