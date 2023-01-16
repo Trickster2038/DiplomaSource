@@ -171,14 +171,12 @@ func Check(w http.ResponseWriter, req *http.Request) {
 				dataFrame.Answer,
 				"\\", "", -1)
 
-			// var data interface{}
-
-			//TODO:
+			var payload []byte
 			if level_type_name == "program" {
 				// TODO:
-				var data CodeRequest
-				err = json.Unmarshal([]byte(user_answer), data.Data.UserSignals)
-				err = json.Unmarshal([]byte(level_answer), data.Data.CorrectSignals)
+				// var data CodeRequest
+				// json.Unmarshal([]byte(user_answer), data.Data.UserSignals)
+				// json.Unmarshal([]byte(level_answer), data.Data.CorrectSignals)
 			} else if level_type_name == "singlechoice_test" {
 				var data SingleChoiceTestRequest
 				var keyval_int_json map[string]int
@@ -188,20 +186,12 @@ func Check(w http.ResponseWriter, req *http.Request) {
 				json.Unmarshal([]byte(user_answer), &keyval_int_json)
 				data.Data.UserAnswerID = keyval_int_json["user_answer_id"]
 
-				err = json.Unmarshal([]byte(level_question), &data.Data.Task)
+				json.Unmarshal([]byte(level_question), &data.Data.Task)
+
 				json.Unmarshal([]byte(level_answer), &keyval_int_json)
 				data.Data.Task.CorrectAnswerID = keyval_int_json["correct_answer_id"]
 
 				payload, _ = json.Marshal(data)
-				var res AnalyzerResponseFrame
-
-				// panic(string(payload))
-
-				res = analyze(payload)
-				w.WriteHeader(res.StatusCode)
-				json.NewEncoder(w).Encode(res)
-
-				// panic(fmt.Sprintf("%v", data))
 			} else if level_type_name == "multichoice_test" {
 				// TODO:
 				// var data MultiChoiceTestRequest
@@ -211,23 +201,12 @@ func Check(w http.ResponseWriter, req *http.Request) {
 				panic("Unknown level type name")
 			}
 
-			// err = json.Unmarshal(reqBody, data)
+			var res AnalyzerResponseFrame
+			res = analyze(payload)
 
-			// if err != nil {
-			// 	defer func() {
-			// 		if r := recover(); r != nil {
-			// 			response.StatusStr = "error"
-			// 			response.StatusCode = 400
-			// 			response.Message = err.Error()
-			// 			w.WriteHeader(response.StatusCode)
-			// 			json.NewEncoder(w).Encode(response)
-			// 		}
-			// 	}()
-			// 	panic("JSON (user answer) parsing error")
-			// }
+			w.WriteHeader(res.StatusCode)
+			json.NewEncoder(w).Encode(res)
 
-			// //TODO: further processing
-			// panic(level_type_name + "|||" + level_question + "|||" + level_answer)
 		}
 
 	}
