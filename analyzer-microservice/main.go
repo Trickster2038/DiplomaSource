@@ -70,7 +70,7 @@ type CodeResult struct {
 type ResponseFrame struct {
 	StatusStr  string      `json:"status_str"`
 	StatusCode int         `json:"status_code"`
-	Message    string      `json:"message, omitempty"`
+	Message    string      `json:"message"`
 	IsCorrect  bool        `json:"is_correct"`
 	Data       interface{} `json:"data"`
 }

@@ -148,7 +148,7 @@ VALUES
     'This is wide descr of single',
     'no code',
     '{\"caption\":\"SingleChoice test\",\"answers\":[{\"text\":\"Умножение\",\"hint\":\"Название говорит само за себя\"},{\"text\":\"Вычитание\",\"hint\":\"Перечитай главу\"},{\"text\":\"Сложение\",\"hint\":\"Все верно\"}]}',
-    '{\"correct_answer_id\":3}'
+    '{\"correct_answer_id\":2}' 
   ),
   (
     4,
