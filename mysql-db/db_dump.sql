@@ -31,10 +31,10 @@ CREATE TABLE `LevelsBrief` (
 LOCK TABLES `LevelsBrief` WRITE;
 /*!40000 ALTER TABLE `LevelsBrief` DISABLE KEYS */;
 INSERT INTO `LevelsBrief` VALUES 
-(1,4,1,10,1,'Device lvl 1','Device test lvl');
-(1,1,2,0,1,'Text lvl 1','Text block');
-(1,2,3,5,1,'Single lvl 1','Singlechoice test');
-(1,3,4,7,1,'Multi lvl 1','Multichoice test');
+(1,4,1,10,1,'Device lvl 1','Device test lvl'),
+(2,1,2,0,1,'Text lvl 1','Text block'),
+(3,2,3,5,1,'Single lvl 1','Singlechoice test'),
+(4,3,4,7,1,'Multi lvl 1','Multichoice test');
 /*!40000 ALTER TABLE `LevelsBrief` ENABLE KEYS */;
 UNLOCK TABLES;
 DROP TABLE IF EXISTS `LevelsData`;
@@ -54,7 +54,9 @@ LOCK TABLES `LevelsData` WRITE;
 /*!40000 ALTER TABLE `LevelsData` DISABLE KEYS */;
 INSERT INTO `LevelsData` VALUES 
 (1,'This is wide desr xxx','Code example','module adder_tb;  \n// Inputs  \nreg [3:0] A;  \nreg [3:0] B;  \nreg Cin;  \n// Outputs  \nwire [3:0] Sum;  \nwire Cout;  \n// Instantiate the Unit Under Test (UUT)  \nripple_adder_4bit uut (  \n.Sum(Sum),  \n.Cout(Cout),  \n.A(A),  \n.B(B),  \n.Cin(Cin)  \n);  \ninitial begin  \n// Initialize Inputs  \nA = 0;  \nB = 0;  \nCin = 0;  \n// Wait 100 ns for global reset to finish  \n#100;  \n// Add stimulus here  \nA=4\'b0001;B=4\'b0000;Cin=1\'b0;  \n#10 A=4\'b1010;B=4\'b0011;Cin=1\'b0;  \n#10 A=4\'b1101;B=4\'b1010;Cin=1\'b1;  \nend  \ninitial begin  \n$dumpfile(\"adder.vcd\");  \n$dumpvars;  \nend  \nendmodule\n','[{\"data\":[\"b0\",\"b1\",\"b1101\",\"b1000\"],\"name\":\"Sum[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[],\"name\":\"Cout\",\"wave\":\"0.......................1.....\"},{\"data\":[\"b0\",\"b1\",\"b1010\",\"b1101\"],\"name\":\"A[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[\"b0\",\"b11\",\"b1010\"],\"name\":\"B[0:3]\",\"wave\":\"=.....................=.=.....\"},{\"data\":[],\"name\":\"Cin\",\"wave\":\"0.......................1.....\"}]'),
-(2,'Wide desc','1field','2filed','3field');
+(2,'Wide text descr','no code','2filed','3field'),
+(3,'Wide single descr','no code','2filed','3field'),
+(4,'Wide multi descr','no code','2filed','3field');
 /*!40000 ALTER TABLE `LevelsData` ENABLE KEYS */;
 UNLOCK TABLES;
 DROP TABLE IF EXISTS `SolutionEfforts`;
@@ -73,7 +75,11 @@ CREATE TABLE `SolutionEfforts` (
 
 LOCK TABLES `SolutionEfforts` WRITE;
 /*!40000 ALTER TABLE `SolutionEfforts` DISABLE KEYS */;
-INSERT INTO `SolutionEfforts` VALUES (1,1,2,1,'2021-01-10 14:53:01'),(2,3,4,0,'2023-01-10 14:53:01');
+INSERT INTO `SolutionEfforts` VALUES 
+(1,1,1,1,'2020-01-10 14:53:01'),
+/* Trickster: 2 lvl is text block */
+(3,3,3,1,'2022-01-10 14:53:01'),
+(4,4,4,0,'2023-01-10 14:53:01');
 /*!40000 ALTER TABLE `SolutionEfforts` ENABLE KEYS */;
 UNLOCK TABLES;
 DROP TABLE IF EXISTS `Types`;
@@ -104,7 +110,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (1,'Deni',1),(2,'David',0),(3,'Mark',0);
+INSERT INTO `Users` VALUES (1,'Deni',1),(2,'David',1),(3,'Mark',0),(4,'Johny',0);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
