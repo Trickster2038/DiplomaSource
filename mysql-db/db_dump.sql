@@ -147,15 +147,15 @@ VALUES
     3,
     'This is wide desr of single',
     'no code',
-    '{\"caption\":\"SingleChoice test\",\"correct_answer_id\":3,\"answers\":[{\"text\":\"Умножение\",\"hint\":\"Название говорит само за себя\"},{\"text\":\"Вычитание\",\"hint\":\"Перечитай главу\"},{\"text\":\"Сложение\",\"hint\":\"Все верно\"}]}',
-    '{\"user_answer_id\": 1}'
+    '{\"caption\":\"SingleChoice test\"\"answers\":[{\"text\":\"Умножение\",\"hint\":\"Название говорит само за себя\"},{\"text\":\"Вычитание\",\"hint\":\"Перечитай главу\"},{\"text\":\"Сложение\",\"hint\":\"Все верно\"}]}',
+    '{\"correct_answer_id\":3}'
   ),
   (
     4,
     'This is wide desr of multi',
     'no code',
-    '{\"caption\":\"MultiChoice test\",\"answers\": [\"Variant 1\", \"Variant 2\"]},\"correct_answers\": [true, true]}',
-    '{\"user_answers\": [true, false]}'
+    '{\"caption\":\"MultiChoice test\",\"answers\": [\"Variant 1\", \"Variant 2\"]}',
+    '{\"correct_answers\": [true, true]}'
   );
 
 /*!40000 ALTER TABLE `LevelsData` ENABLE KEYS */
