@@ -193,7 +193,7 @@ func check(w http.ResponseWriter, req *http.Request) {
 		data = &SingleChoiceTestRequest{}
 	} else if type_selector.Type == "multichoice_test" {
 		data = &MultiChoiceTestRequest{}
-	} else if type_selector.Type == "code" {
+	} else if type_selector.Type == "program" {
 		data = &CodeRequest{}
 	} else {
 		panic("Unknown task type")

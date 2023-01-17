@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gateway/levels"
 	"gateway/request"
 	"io/ioutil"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 // TODO:
 // - check if already solved
 // - write to stats
-// - Data string -> interface{}
+// - Data string -> interface{} ?
 
 type RequestFrame struct {
 	UserID  int    `json:"user_id"`
@@ -174,10 +175,24 @@ func Check(w http.ResponseWriter, req *http.Request) {
 
 			var payload []byte
 			if level_type_name == "program" {
-				// TODO:
-				// var data CodeRequest
-				// json.Unmarshal([]byte(user_answer), data.Data.UserSignals)
-				// json.Unmarshal([]byte(level_answer), data.Data.CorrectSignals)
+				var data CodeRequest
+				data.Type = level_type_name
+
+				user_signals := levels.Handle_code_level_data(dataFrame.UserID,
+					dataFrame.LevelID, user_answer, level_question)
+
+				user_signals = strings.Replace(user_signals, "\\", "", -1)
+
+				err = json.Unmarshal([]byte(user_signals), &data.Data.UserSignals)
+				if err != nil {
+					panic(fmt.Sprintf("Compiling user device error: %v", user_signals))
+				}
+				err = json.Unmarshal([]byte(level_answer), &data.Data.CorrectSignals)
+				if err != nil {
+					panic("Parsing correct signals error")
+				}
+
+				payload, _ = json.Marshal(data)
 			} else if level_type_name == "singlechoice_test" {
 				var data SingleChoiceTestRequest
 				var keyval_int_json map[string]int
