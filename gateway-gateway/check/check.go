@@ -13,6 +13,7 @@ import (
 // TODO:
 // - check if already solved
 // - write to stats
+// - Data string -> interface{}
 
 type RequestFrame struct {
 	UserID  int    `json:"user_id"`
@@ -193,8 +194,13 @@ func Check(w http.ResponseWriter, req *http.Request) {
 
 				payload, _ = json.Marshal(data)
 			} else if level_type_name == "multichoice_test" {
-				// TODO:
-				// var data MultiChoiceTestRequest
+				var data MultiChoiceTestRequest
+
+				data.Type = level_type_name
+				json.Unmarshal([]byte(level_answer), &data.Data.Task)
+				json.Unmarshal([]byte(user_answer), &data.Data)
+
+				payload, _ = json.Marshal(data)
 			} else if level_type_name == "text" {
 				panic("Cannot check level of text type")
 			} else {
