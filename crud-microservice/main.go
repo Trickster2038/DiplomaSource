@@ -34,7 +34,7 @@ type LevelsList struct {
 }
 
 type EncapsulatedSuccessful struct {
-	Successful bool `json:"successful"`
+	Successful bool `json:"is_successful"`
 }
 
 type RfLevelsBrief struct {
@@ -167,8 +167,8 @@ type ICheckableSuccessful interface {
 type ResponseFrame struct {
 	StatusStr  string      `json:"status_str"`
 	StatusCode int         `json:"status_code"`
-	Message    string      `json:"message,omitempty"`
-	Data       interface{} `json:"data,omitempty"`
+	Message    string      `json:"message"`
+	Data       interface{} `json:"data"`
 }
 
 func crud(w http.ResponseWriter, req *http.Request) {
