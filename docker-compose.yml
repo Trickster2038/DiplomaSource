@@ -39,3 +39,10 @@ services:
     ports:
       - "8084:8084"
     # connection :8082
+  stats-microservice:
+    build: ./stats-microservice
+    ports:
+      - "8085:8085"
+    environment:
+      MYSQL_PASS: ${MYSQL_PASS}
+  
