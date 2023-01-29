@@ -22,6 +22,10 @@ type LevelStatus struct {
 	LevelType    string `json:"level_type"`
 }
 
+type AverageEffortsStruct struct {
+	AverageEfforts float64 `json:"avg_efforts"`
+}
+
 func General_progress(user_id int) GeneralProgress {
 	db := connection.Connect_db()
 	var progress GeneralProgress
@@ -53,7 +57,7 @@ func Levels_statuses(user_id int) []LevelStatus {
 		"ON lb.id = level_id JOIN Types tp ON level_type = tp.id "+
 		"ORDER BY SEQNUM", user_id)
 	if err != nil {
-		panic(err.Error())
+		panic(fmt.Sprintf("Getting levels statuses error in DB:", err.Error()))
 	}
 
 	var r LevelStatus
@@ -71,6 +75,23 @@ func Levels_statuses(user_id int) []LevelStatus {
 		}
 
 		res = append(res, r)
+	}
+
+	defer db.Close()
+	return res
+}
+
+func Average_efforts_per_level(user_id int) AverageEffortsStruct {
+	var res AverageEffortsStruct
+	db := connection.Connect_db()
+
+	err := db.QueryRow("SELECT IFNULL(c1/c2, -1.0) FROM "+
+		"(SELECT count(*) as c1 FROM SolutionEfforts WHERE user_id = ?) tb1, "+
+		"(SELECT count(*) as c2 FROM SolutionEfforts WHERE user_id = ? AND is_successful = 1) tb2",
+		user_id, user_id).
+		Scan(&res.AverageEfforts)
+	if err != nil {
+		panic(fmt.Sprint("Getting avg efforts per level DB error: ", err.Error()))
 	}
 
 	defer db.Close()

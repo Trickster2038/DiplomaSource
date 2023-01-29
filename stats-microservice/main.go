@@ -46,6 +46,8 @@ func personal_stats(w http.ResponseWriter, req *http.Request) {
 		response.Data = personal.General_progress(reqFrame.UserID)
 	} else if reqFrame.StatType == "each_level_status" {
 		response.Data = personal.Levels_statuses(reqFrame.UserID)
+	} else if reqFrame.StatType == "avg_efforts" {
+		response.Data = personal.Average_efforts_per_level(reqFrame.UserID)
 	} else {
 		panic("Unknown personal stat type")
 	}
