@@ -5,9 +5,21 @@ import (
 	"stats/connection"
 )
 
+// TODO: check if user does not exist on GATEWAY
+
 type GeneralProgress struct {
 	Actual int `json:"actual"`
 	Total  int `json:"total"`
+}
+
+type LevelStatus struct {
+	ID           int    `json:"id"`
+	Seqnum       int    `json:"seqnum"`
+	Cost         int    `json:"cost"`
+	LevelName    string `json:"level_name"`
+	Brief        string `json:"brief"`
+	IsSuccessful bool   `json:"is_succesful"`
+	LevelType    string `json:"level_type"`
 }
 
 func General_progress(user_id int) GeneralProgress {
@@ -29,4 +41,38 @@ func General_progress(user_id int) GeneralProgress {
 
 	defer db.Close()
 	return progress
+}
+
+func Levels_statuses(user_id int) []LevelStatus {
+	var res []LevelStatus
+	db := connection.Connect_db()
+
+	results, err := db.Query("SELECT lb.id, lb.seqnum, cost, level_name, brief, IFNULL(is_successful, 0), tp.name as level_type "+
+		"FROM (SELECT id, level_type,seqnum, cost, name as level_name, brief FROM LevelsBrief WHERE is_active = 1) lb "+
+		"LEFT JOIN (SELECT user_id, is_successful, level_id FROM SolutionEfforts WHERE user_id = ? AND is_successful = 1) se "+
+		"ON lb.id = level_id JOIN Types tp ON level_type = tp.id "+
+		"ORDER BY SEQNUM", user_id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var r LevelStatus
+
+	for results.Next() {
+		err = results.Scan(&r.ID,
+			&r.Seqnum,
+			&r.Cost,
+			&r.LevelName,
+			&r.Brief,
+			&r.IsSuccessful,
+			&r.LevelType)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		res = append(res, r)
+	}
+
+	defer db.Close()
+	return res
 }
