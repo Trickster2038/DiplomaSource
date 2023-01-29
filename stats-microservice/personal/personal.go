@@ -26,11 +26,17 @@ type AverageEffortsStruct struct {
 	AverageEfforts float64 `json:"avg_efforts"`
 }
 
+type MonthlyActivity struct {
+	AcceptedTasks int `json: "accepted_tasks"`
+	EarnedPoints  int `json: "earned_points"`
+	Efforts       int `json: "efforts"`
+}
+
 func General_progress(user_id int) GeneralProgress {
 	db := connection.Connect_db()
 	var progress GeneralProgress
 
-	err := db.QueryRow("SELECT sum(cost) FROM SolutionEfforts se, LevelsBrief lb WHERE se.level_id = lb.id AND user_id = ? AND is_successful = 1",
+	err := db.QueryRow("SELECT sum(cost) FROM SolutionEfforts se, LevelsBrief lb WHERE se.level_id = lb.id AND user_id = ? AND is_successful = 1 AND lb.is_active = 1",
 		user_id).
 		Scan(&progress.Actual)
 	if err != nil {
@@ -92,6 +98,29 @@ func Average_efforts_per_level(user_id int) AverageEffortsStruct {
 		Scan(&res.AverageEfforts)
 	if err != nil {
 		panic(fmt.Sprint("Getting avg efforts per level DB error: ", err.Error()))
+	}
+
+	defer db.Close()
+	return res
+}
+
+func Monthly_activity(user_id int) MonthlyActivity {
+	var res MonthlyActivity
+	db := connection.Connect_db()
+
+	err := db.QueryRow("SELECT count(*) FROM SolutionEfforts WHERE user_id = ? AND time > CURRENT_TIMESTAMP() - 30*24*60*60*1000",
+		user_id).
+		Scan(&res.Efforts)
+	if err != nil {
+		panic(fmt.Sprint("Getting monthly activity DB error: ", err.Error()))
+	}
+
+	err = db.QueryRow("SELECT count(*), IFNULL(sum(cost), 0) FROM SolutionEfforts se JOIN LevelsBrief lb ON level_id = lb.id "+
+		"WHERE is_successful = 1 AND user_id = ? AND time > CURRENT_TIMESTAMP() - 30*24*60*60*1000;",
+		user_id).
+		Scan(&res.AcceptedTasks, &res.EarnedPoints)
+	if err != nil {
+		panic(fmt.Sprint("Getting monthly activity DB error: ", err.Error()))
 	}
 
 	defer db.Close()
