@@ -50,6 +50,8 @@ func personal_stats(w http.ResponseWriter, req *http.Request) {
 		response.Data = personal.Average_efforts_per_level(reqFrame.UserID)
 	} else if reqFrame.StatType == "monthly_activity" {
 		response.Data = personal.Monthly_activity(reqFrame.UserID)
+	} else if reqFrame.StatType == "activity_borders" {
+		response.Data = personal.Activity_borders(reqFrame.UserID)
 	} else {
 		panic("Unknown personal stat type")
 	}

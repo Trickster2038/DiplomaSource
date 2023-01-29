@@ -32,6 +32,13 @@ type MonthlyActivity struct {
 	Efforts       int `json: "efforts"`
 }
 
+type ActivityBorders struct {
+	FirstEffort string `json: "first_efforts"`
+	FirstSolved string `json: "first_solved"`
+	LastEffort  string `json: "last_efforts"`
+	LastSolved  string `json: "last_solved"`
+}
+
 func General_progress(user_id int) GeneralProgress {
 	db := connection.Connect_db()
 	var progress GeneralProgress
@@ -121,6 +128,42 @@ func Monthly_activity(user_id int) MonthlyActivity {
 		Scan(&res.AcceptedTasks, &res.EarnedPoints)
 	if err != nil {
 		panic(fmt.Sprint("Getting monthly activity DB error: ", err.Error()))
+	}
+
+	defer db.Close()
+	return res
+}
+
+func Activity_borders(user_id int) ActivityBorders {
+	var res ActivityBorders
+	db := connection.Connect_db()
+
+	err := db.QueryRow("SELECT IFNULL(min(time), -1) FROM SolutionEfforts WHERE user_id = ?",
+		user_id).
+		Scan(&res.FirstEffort)
+	if err != nil {
+		panic(fmt.Sprint("Getting activity borders DB error: ", err.Error()))
+	}
+
+	err = db.QueryRow("SELECT IFNULL(min(time), -1) FROM SolutionEfforts WHERE is_successful = 1 AND user_id = ?",
+		user_id).
+		Scan(&res.FirstSolved)
+	if err != nil {
+		panic(fmt.Sprint("Getting activity borders DB error: ", err.Error()))
+	}
+
+	err = db.QueryRow("SELECT IFNULL(max(time), -1) FROM SolutionEfforts WHERE user_id = ?",
+		user_id).
+		Scan(&res.LastEffort)
+	if err != nil {
+		panic(fmt.Sprint("Getting activity borders DB error: ", err.Error()))
+	}
+
+	err = db.QueryRow("SELECT IFNULL(max(time), -1) FROM SolutionEfforts WHERE is_successful = 1 AND user_id = ?",
+		user_id).
+		Scan(&res.LastSolved)
+	if err != nil {
+		panic(fmt.Sprint("Getting activity borders DB error: ", err.Error()))
 	}
 
 	defer db.Close()
