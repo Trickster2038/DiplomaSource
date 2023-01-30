@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gateway/request"
+	"gateway/user"
 	"io/ioutil"
 	"net/http"
 )
@@ -39,6 +40,7 @@ func Stats(w http.ResponseWriter, req *http.Request) {
 
 	if dataFrame.Scope == "personal" {
 		endpoint = "personalstats"
+		user.Check_user_exists(dataFrame.UserId)
 	} else if dataFrame.Scope == "general" {
 		endpoint = "generalstats"
 	} else {

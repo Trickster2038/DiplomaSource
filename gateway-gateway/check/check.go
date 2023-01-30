@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gateway/levels"
 	"gateway/request"
+	"gateway/user"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -18,13 +19,6 @@ type RequestFrame struct {
 	UserID  int    `json:"user_id"`
 	LevelID int    `json:"level_id"`
 	Answer  string `json:"answer"`
-}
-
-type ByIdRequest struct {
-	MetaInfo request.MetaInfo `json:"metainfo"`
-	Data     struct {
-		ID int `json:"id"`
-	} `json:"data"`
 }
 
 type CheckSuccessfulUniversal struct {
@@ -110,26 +104,6 @@ func analyze(payload []byte) AnalyzerResponseFrame {
 	return res
 }
 
-func check_user_exists(user_id int) {
-	var user_request ByIdRequest
-	user_request.Data.ID = user_id
-	user_request.MetaInfo.ObjType = "user"
-	user_request.MetaInfo.Action = "read"
-	payload, _ := json.Marshal(user_request)
-
-	resp, err_post := http.Post("http://crud-microservice:8082/crud", "application/json", bytes.NewBuffer(payload))
-
-	if err_post != nil {
-		panic(fmt.Sprintf("Accesing CRUD-microservice.Users error: %v", err_post.Error()))
-	}
-
-	var res request.ResponseFrame
-	json.NewDecoder(resp.Body).Decode(&res)
-	if res.StatusStr != "ok" {
-		panic(fmt.Sprintf("User with ID=%d does NOT exist", user_id))
-	}
-}
-
 func level_already_solved(level_id int, user_id int) bool {
 	var req CheckSuccessfulUniversal
 	req.MetaInfo.ObjType = "solution_effort"
@@ -208,7 +182,7 @@ func Check(w http.ResponseWriter, req *http.Request) {
 		panic("JSON (Request) parsing error")
 	}
 
-	check_user_exists(dataFrame.UserID)
+	user.Check_user_exists(dataFrame.UserID)
 	if level_already_solved(dataFrame.LevelID, dataFrame.UserID) {
 
 		var res AnalyzerResponseFrame
@@ -221,7 +195,7 @@ func Check(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(res)
 	} else {
 
-		var level_brief ByIdRequest
+		var level_brief request.IdRequestFrame
 		level_brief.MetaInfo.ObjType = "levels_brief"
 		level_brief.MetaInfo.Action = "read"
 		level_brief.Data.ID = dataFrame.LevelID
