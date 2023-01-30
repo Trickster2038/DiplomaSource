@@ -12,9 +12,6 @@ import (
 	"strings"
 )
 
-// TODO:
-// - read stats
-
 type RequestFrame struct {
 	UserID  int    `json:"user_id"`
 	LevelID int    `json:"level_id"`

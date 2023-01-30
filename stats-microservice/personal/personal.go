@@ -5,8 +5,6 @@ import (
 	"stats/connection"
 )
 
-// TODO: check if user does not exist on GATEWAY
-
 type GeneralProgress struct {
 	ActualPoints int    `json:"actual_points"`
 	TotalPoints  int    `json:"total_points"`

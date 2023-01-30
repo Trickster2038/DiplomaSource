@@ -45,7 +45,6 @@ def parse_handler():
                 return {
                     "status_str": "ok",
                     "status_code": 200,
-                    # FIXME (actual?): get only first child
                     "data": list(filter(lambda signal: signal["type"]["name"] != "struct", vcd_parsed["children"][0]["children"]))
                 }, 200
             except Exception as e:

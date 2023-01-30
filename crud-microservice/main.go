@@ -18,8 +18,6 @@ import (
 	"crud/user"
 )
 
-// TODO: ReadAll() for TypeRecord?
-
 type MetaInfo struct {
 	Obj_type string `json:"obj_type"`
 	Action   string `json:"action"`

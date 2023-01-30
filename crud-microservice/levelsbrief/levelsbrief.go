@@ -23,7 +23,7 @@ func (level_brief LevelsBrief) get_level_type_id() int {
 	return typerec.ID
 }
 
-// TODO: MaxId returning func ?
+// TODO [?]: MaxId returning func
 func (level_brief LevelsBrief) Create() {
 	db := connection.Connect_db()
 	_, err := db.Query("UPDATE LevelsBrief SET seqnum = seqnum + 1 WHERE seqnum >= ?",

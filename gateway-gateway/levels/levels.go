@@ -248,9 +248,11 @@ func Crud_levels(w http.ResponseWriter, req *http.Request) {
 		code_level_data_str.Data.WideDescription = code_level_data.Data.WideDescription
 		code_level_data_str.Data.Code = code_level_data.Data.Code
 
-		// TODO: NOTE:
-		// Gateway Request - question: {src, tb}, answer: ""
-		// CRUD Request - question: tb, answer: wavedrom
+		/*
+			TODO [NOT]:
+			Gateway Request - question: {src, tb}, answer: ""
+			CRUD Request - question: tb, answer: wavedrom
+		*/
 		code_level_data_str.Data.Question = code_level_data.Data.Question.Tb
 		code_level_data_str.Data.Answer = Handle_code_level_data(code_level_data.UserID,
 			code_level_data.Data.ID,

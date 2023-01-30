@@ -15,7 +15,7 @@ import (
 )
 
 /*
-TODO:
+TODO [list]:
 - errors?
 - checks?
 - UI align of signals labels?
