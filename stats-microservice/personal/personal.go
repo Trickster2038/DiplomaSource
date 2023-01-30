@@ -30,16 +30,16 @@ type AverageEffortsStruct struct {
 }
 
 type MonthlyActivity struct {
-	AcceptedTasks int `json: "accepted_tasks"`
-	EarnedPoints  int `json: "earned_points"`
-	Efforts       int `json: "efforts"`
+	AcceptedTasks int `json:"accepted_tasks"`
+	EarnedPoints  int `json:"earned_points"`
+	Efforts       int `json:"efforts"`
 }
 
 type ActivityBorders struct {
-	FirstEffort string `json: "first_efforts"`
-	FirstSolved string `json: "first_solved"`
-	LastEffort  string `json: "last_efforts"`
-	LastSolved  string `json: "last_solved"`
+	FirstEffort string `json:"first_efforts"`
+	FirstSolved string `json:"first_solved"`
+	LastEffort  string `json:"last_efforts"`
+	LastSolved  string `json:"last_solved"`
 }
 
 func General_progress(user_id int) GeneralProgress {
