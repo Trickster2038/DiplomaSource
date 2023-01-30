@@ -93,6 +93,8 @@ func general_stats(w http.ResponseWriter, req *http.Request) {
 		response.Data = general.Solutions_count_distribution()
 	} else if reqFrame.StatType == "activity_by_month" {
 		response.Data = general.Activity_by_month()
+	} else if reqFrame.StatType == "top_month_users" {
+		response.Data = general.Top_last_month_active_users()
 	} else {
 		panic("Unknown general stat type")
 	}

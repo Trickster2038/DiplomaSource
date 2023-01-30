@@ -33,6 +33,13 @@ type ActivtyByMonth struct {
 	EffortsCount   int `json:"efforts_count"`
 }
 
+type TopUser struct {
+	ID             int    `json:"id"`
+	Nickname       string `json:"nickname"`
+	SolutionsCount int    `json:"solutions_count"`
+	EffortsCount   int    `json:"efforts_count"`
+}
+
 func Each_level_passed() []LevelPassed {
 	var res []LevelPassed
 	db := connection.Connect_db()
@@ -131,7 +138,7 @@ func Activity_by_month() []ActivtyByMonth {
 
 	results, err := db.Query("Select YEAR(time), MONTH(time), IFNULL(sum(is_successful), 0) " +
 		"FROM SolutionEfforts GROUP BY MONTH(time), YEAR(time) " +
-		"ORDER BY YEAR(time), MONTH(time);")
+		"ORDER BY YEAR(time), MONTH(time)")
 	if err != nil {
 		panic(fmt.Sprintf("Getting activity by month error in DB:", err.Error()))
 	}
@@ -152,7 +159,7 @@ func Activity_by_month() []ActivtyByMonth {
 
 	results, err = db.Query("Select IFNULL(count(*), 0) " +
 		"FROM SolutionEfforts GROUP BY MONTH(time), YEAR(time) " +
-		"ORDER BY YEAR(time), MONTH(time);")
+		"ORDER BY YEAR(time), MONTH(time)")
 	if err != nil {
 		panic(fmt.Sprintf("Getting activity by month error in DB:", err.Error()))
 	}
@@ -165,6 +172,33 @@ func Activity_by_month() []ActivtyByMonth {
 		}
 
 		i++
+	}
+
+	defer db.Close()
+	return res
+}
+
+func Top_last_month_active_users() []TopUser {
+	var res []TopUser
+	db := connection.Connect_db()
+
+	results, err := db.Query("select u.id, u.nickname, IFNULL(sum(is_successful),0) as solutions, IFNULL(count(is_successful),0) " +
+		"FROM Users u LEFT JOIN (SELECT * FROM SolutionEfforts WHERE time > CURRENT_TIMESTAMP() - 30*24*60*60*1000) se " +
+		"ON u.id = se.user_id GROUP BY u.id ORDER BY solutions DESC;")
+	if err != nil {
+		panic(fmt.Sprintf("Getting solutions distribution error in DB:", err.Error()))
+	}
+
+	var r TopUser
+
+	for results.Next() {
+		err = results.Scan(
+			&r.ID, &r.Nickname, &r.SolutionsCount, &r.EffortsCount)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		res = append(res, r)
 	}
 
 	defer db.Close()
