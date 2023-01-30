@@ -8,8 +8,11 @@ import (
 // TODO: check if user does not exist on GATEWAY
 
 type GeneralProgress struct {
-	Actual int `json:"actual"`
-	Total  int `json:"total"`
+	ActualPoints int    `json:"actual_points"`
+	TotalPoints  int    `json:"total_points"`
+	ActualLevels int    `json:"actual_levels"`
+	TotalLevels  int    `json:"total_levels"`
+	PassStatus   string `json:"pass_status"`
 }
 
 type LevelStatus struct {
@@ -43,17 +46,40 @@ func General_progress(user_id int) GeneralProgress {
 	db := connection.Connect_db()
 	var progress GeneralProgress
 
-	err := db.QueryRow("SELECT sum(cost) FROM SolutionEfforts se, LevelsBrief lb WHERE se.level_id = lb.id AND user_id = ? AND is_successful = 1 AND lb.is_active = 1",
+	err := db.QueryRow("SELECT IFNULL(sum(cost), 0) FROM SolutionEfforts se, LevelsBrief lb WHERE se.level_id = lb.id AND user_id = ? AND is_successful = 1 AND lb.is_active = 1",
 		user_id).
-		Scan(&progress.Actual)
+		Scan(&progress.ActualPoints)
 	if err != nil {
 		panic(fmt.Sprint("Users table error: ", err.Error()))
 	}
 
-	err = db.QueryRow("SELECT sum(cost) FROM LevelsBrief").
-		Scan(&progress.Total)
+	err = db.QueryRow("SELECT IFNULL(sum(cost), 0) FROM LevelsBrief WHERE is_active = 1").
+		Scan(&progress.TotalPoints)
 	if err != nil {
 		panic(err.Error())
+	}
+
+	err = db.QueryRow("SELECT IFNULL(count(*), 0) FROM SolutionEfforts se, LevelsBrief lb WHERE se.level_id = lb.id AND user_id = ? AND is_successful = 1 AND lb.is_active = 1",
+		user_id).
+		Scan(&progress.ActualLevels)
+	if err != nil {
+		panic(fmt.Sprint("Users table error: ", err.Error()))
+	}
+
+	err = db.QueryRow("SELECT IFNULL(count(*), 0) FROM LevelsBrief WHERE is_active = 1").
+		Scan(&progress.TotalLevels)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	pass_percent := 100 * (float64(progress.ActualPoints) / float64(progress.TotalPoints))
+
+	if pass_percent < 80 {
+		progress.PassStatus = "not_passed"
+	} else if pass_percent < 90 {
+		progress.PassStatus = "passed"
+	} else {
+		progress.PassStatus = "awesome"
 	}
 
 	defer db.Close()
