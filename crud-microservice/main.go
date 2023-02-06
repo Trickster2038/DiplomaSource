@@ -19,8 +19,8 @@ import (
 )
 
 type MetaInfo struct {
-	Obj_type string `json:"obj_type"`
-	Action   string `json:"action"`
+	ObjType string `json:"obj_type"`
+	Action  string `json:"action"`
 }
 
 type EncapsulatedMetaInfo struct {
@@ -36,27 +36,27 @@ type EncapsulatedSuccessful struct {
 }
 
 type RfLevelsBrief struct {
-	MetaInfo MetaInfo                `json:"MetaInfo"`
+	MetaInfo MetaInfo                `json:"metainfo"`
 	Data     levelsbrief.LevelsBrief `json:"data"`
 }
 
 type RfLevelsData struct {
-	MetaInfo MetaInfo              `json:"MetaInfo"`
+	MetaInfo MetaInfo              `json:"metainfo"`
 	Data     levelsdata.LevelsData `json:"data"`
 }
 
 type RfSolutionEffort struct {
-	MetaInfo MetaInfo                       `json:"MetaInfo"`
+	MetaInfo MetaInfo                       `json:"metainfo"`
 	Data     solutionefforts.SolutionEffort `json:"data"`
 }
 
 type RfTypeRecord struct {
-	MetaInfo MetaInfo        `json:"MetaInfo"`
+	MetaInfo MetaInfo        `json:"metainfo"`
 	Data     typerecord.Type `json:"data"`
 }
 
 type RfUser struct {
-	MetaInfo MetaInfo  `json:"MetaInfo"`
+	MetaInfo MetaInfo  `json:"metainfo"`
 	Data     user.User `json:"data"`
 }
 
@@ -204,15 +204,15 @@ func crud(w http.ResponseWriter, req *http.Request) {
 
 	var data interface{}
 
-	if reqFrame.MetaInfo.Obj_type == "levels_brief" {
+	if reqFrame.MetaInfo.ObjType == "levels_brief" {
 		data = &RfLevelsBrief{}
-	} else if reqFrame.MetaInfo.Obj_type == "levels_data" {
+	} else if reqFrame.MetaInfo.ObjType == "levels_data" {
 		data = &RfLevelsData{}
-	} else if reqFrame.MetaInfo.Obj_type == "type_record" {
+	} else if reqFrame.MetaInfo.ObjType == "type_record" {
 		data = &RfTypeRecord{}
-	} else if reqFrame.MetaInfo.Obj_type == "solution_effort" {
+	} else if reqFrame.MetaInfo.ObjType == "solution_effort" {
 		data = &RfSolutionEffort{}
-	} else if reqFrame.MetaInfo.Obj_type == "user" {
+	} else if reqFrame.MetaInfo.ObjType == "user" {
 		data = &RfUser{}
 	} else {
 		panic("Unknown Obj Type")
