@@ -182,11 +182,11 @@ func Top_last_month_active_users() []TopUser {
 	var res []TopUser
 	db := connection.Connect_db()
 
-	results, err := db.Query("select u.id, u.nickname, IFNULL(sum(is_successful),0) as solutions, IFNULL(count(is_successful),0) " +
+	results, err := db.Query("select u.id, u.nickname, IFNULL(sum(is_successful),0) as solutions, IFNULL(count(is_successful),0) as efforts " +
 		"FROM Users u LEFT JOIN (SELECT * FROM SolutionEfforts WHERE time > CURRENT_TIMESTAMP() - 30*24*60*60*1000) se " +
-		"ON u.id = se.user_id GROUP BY u.id ORDER BY solutions DESC;")
+		"ON u.id = se.user_id GROUP BY u.id ORDER BY solutions, efforts  DESC;")
 	if err != nil {
-		panic(fmt.Sprintf("Getting solutions distribution error in DB:", err.Error()))
+		panic(fmt.Sprintf("Getting top active users error in DB:", err.Error()))
 	}
 
 	var r TopUser
