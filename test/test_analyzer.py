@@ -1,6 +1,6 @@
-import lib.settings as settings
-import lib.utils as utils
-from lib.consts import *
+import utils.settings as settings
+import utils.utils as utils
+from utils.consts import *
 
 def test_correct_negative():
     resp = utils.send_request(settings.ANALYZER_PORT, \
