@@ -1,19 +1,19 @@
 version: "3.9"
 services:
   compiler-microservice:
-    build: ./compiler-microservice
+    build: ./src/compiler-microservice
     ports:
       - "8080:8080"
   parser-microservice:
-    build: ./parser-microservice
+    build: ./src/parser-microservice
     ports:
       - "5000:5000"
   wavedrom-microservice:
-    build: ./wavedrom-microservice
+    build: ./src/wavedrom-microservice
     ports:
       - "8081:8081"
   mysqldb:
-    build: ./mysql-db
+    build: ./src/mysql-db
     ports:
       - "8089:3306"
     environment:
@@ -24,23 +24,23 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
   crud-microservice:
-    build: ./crud-microservice
+    build: ./src/crud-microservice
     ports:
       - "8082:8082"
       # Connection: "db_user:%s@tcp(mysqldb:3306)/levels"
     environment:
       MYSQL_PASS: ${MYSQL_PASS}
   analyzer-microservice:
-    build: ./analyzer-microservice
+    build: ./src/analyzer-microservice
     ports:
       - "8083:8083"
   gateway:
-    build: ./gateway-gateway
+    build: ./src/gateway-gateway
     ports:
       - "8084:8084"
     # connection :8082
   stats-microservice:
-    build: ./stats-microservice
+    build: ./src/stats-microservice
     ports:
       - "8085:8085"
     environment:
