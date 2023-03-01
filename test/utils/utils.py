@@ -17,3 +17,10 @@ def is_ok_response(response):
     return response.status_code == 200 \
         and response.json()["status_code"] == 200 \
             and response.json()["status_str"] == "ok"
+
+@allure.step("Check response [error]")
+def is_error_response(response):
+    allure.attach(json.dumps(response.json(), indent=4).encode(), 'Response payload', allure.attachment_type.TEXT)
+    return response.status_code == 400 \
+        and response.json()["status_code"] == 400 \
+            and response.json()["status_str"] == "error"

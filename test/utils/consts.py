@@ -1,11 +1,11 @@
 class Analyzer:
-    
+
     single_valid_positive = {
         "type": "singlechoice_test",
         "data": {
-            "user_answer_id": 1,
+            "user_answer_id": 2,
             "task": {
-                "correct_answer_id": 1,
+                "correct_answer_id": 2,
                 "answers": [
                     {
                         "text": "Умножение",
@@ -14,7 +14,26 @@ class Analyzer:
                     {
                         "text": "Вычитание",
                         "hint": "Перечитай главу"
+                    },
+                    {
+                        "text": "Сложение",
+                        "hint": "Все верно"
                     }
+                ]
+            }
+        }
+    }
+    multi_valid_positive = {
+        "type": "multichoice_test",
+        "data": {
+            "user_answers": [
+                True,
+                True
+            ],
+            "task": {
+                "correct_answers": [
+                    True,
+                    True
                 ]
             }
         }
