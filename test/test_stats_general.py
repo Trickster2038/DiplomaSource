@@ -11,10 +11,14 @@ import pytest
 @allure.epic("Unit-testing")
 @allure.story("General stats")
 @pytest.mark.parametrize("payload, response", [
-    (StatsGeneral.request_each_level_passed_correct,
-     StatsGeneral.response_each_level_passed_correct),
-    (StatsGeneral.request_each_avg_efforts_correct,
-     StatsGeneral.response_each_avg_efforts_correct)])
+    (StatsGeneral.request_each_level_passed,
+     StatsGeneral.response_each_level_passed),
+    (StatsGeneral.request_each_avg_efforts,
+     StatsGeneral.response_each_avg_efforts),
+    (StatsGeneral.request_activity_by_months,
+     StatsGeneral.response_activity_by_months),
+    (StatsGeneral.request_top_active_users,
+     StatsGeneral.response_top_active_users)])
 def test_each_level_passed_correct(payload, response):
     resp = utils.send_request(settings.STATS_PORT,
                               "generalstats", payload)

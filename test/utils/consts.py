@@ -526,10 +526,10 @@ class Synth:
 
 
 class StatsGeneral:
-    request_each_level_passed_correct = {
+    request_each_level_passed = {
         "stat_type": "each_level_passed"
     }
-    response_each_level_passed_correct = {
+    response_each_level_passed = {
         "status_str": "ok",
         "status_code": 200,
         "message": "",
@@ -560,10 +560,10 @@ class StatsGeneral:
             }
         ]
     }
-    request_each_avg_efforts_correct = {
+    request_each_avg_efforts = {
         "stat_type": "each_level_avg_efforts"
     }
-    response_each_avg_efforts_correct = {
+    response_each_avg_efforts = {
         "status_str": "ok",
         "status_code": 200,
         "message": "",
@@ -591,6 +591,74 @@ class StatsGeneral:
                 "name": "Multi lvl 1",
                 "seqnum": 4,
                 "avg_efforts": 0
+            }
+        ]
+    }
+    request_activity_by_months = {
+        "stat_type": "activity_by_month"
+    }
+    response_activity_by_months = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": [
+            {
+                "year": 2020,
+                "month": 1,
+                "solutions_count": 1,
+                "efforts_count": 1
+            },
+            {
+                "year": 2022,
+                "month": 1,
+                "solutions_count": 1,
+                "efforts_count": 1
+            },
+            {
+                "year": 2022,
+                "month": 2,
+                "solutions_count": 0,
+                "efforts_count": 1
+            },
+            {
+                "year": 2023,
+                "month": 1,
+                "solutions_count": 0,
+                "efforts_count": 1
+            }
+        ]
+    }
+    request_top_active_users = {
+        "stat_type": "top_month_users"
+    }
+    response_top_active_users = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": [
+            {
+                "id": 4,
+                "nickname": "Johny",
+                "solutions_count": 0,
+                "efforts_count": 1
+            },
+            {
+                "id": 1,
+                "nickname": "Deni",
+                "solutions_count": 0,
+                "efforts_count": 0
+            },
+            {
+                "id": 2,
+                "nickname": "David",
+                "solutions_count": 0,
+                "efforts_count": 0
+            },
+            {
+                "id": 3,
+                "nickname": "Mark",
+                "solutions_count": 0,
+                "efforts_count": 0
             }
         ]
     }
