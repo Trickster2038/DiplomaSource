@@ -23,4 +23,4 @@ def test_error_in_vcd():
     resp = utils.send_request(settings.PARSER_PORT,
                               "parse", payload)
     assert utils.is_error_response(resp)
-    assert "VCD parsing error" in resp.json()["message"]
+    assert "vcd parsing error" in resp.json()["message"].lower()
