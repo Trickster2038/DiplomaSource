@@ -11,16 +11,16 @@ import pytest
 @allure.epic("Unit-testing")
 @allure.story("General stats")
 @pytest.mark.parametrize("payload, response", [
-    (StatsGeneral.request_each_level_passed,
-     StatsGeneral.response_each_level_passed),
-    (StatsGeneral.request_each_avg_efforts,
-     StatsGeneral.response_each_avg_efforts),
-    (StatsGeneral.request_activity_by_months,
-     StatsGeneral.response_activity_by_months),
-    (StatsGeneral.request_top_active_users,
-     StatsGeneral.response_top_active_users)])
+    (StatsPersonal.request_general_progress,
+     StatsPersonal.response_general_progress),
+    (StatsPersonal.request_avg_efforts,
+     StatsPersonal.response_avg_efforts),
+    (StatsPersonal.request_monthly_activity,
+     StatsPersonal.response_monthly_activity),
+    (StatsPersonal.request_activity_borders,
+     StatsPersonal.response_activity_borders)])
 def test_correct_requests(payload, response):
     resp = utils.send_request(settings.STATS_PORT,
-                              "generalstats", payload)
+                              "personalstats", payload)
     assert utils.is_ok_response(resp)
     assert utils.ordered_json(resp.json()) == utils.ordered_json(response)

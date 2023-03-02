@@ -662,3 +662,110 @@ class StatsGeneral:
             }
         ]
     }
+
+
+class StatsPersonal:
+    request_general_progress = {
+        "user_id": 3,
+        "stat_type": "general_progress"
+    }
+    response_general_progress = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "actual_points": 5,
+            "total_points": 22,
+            "actual_levels": 1,
+            "total_levels": 4,
+            "pass_status": "not_passed"
+        }
+    }
+    request_each_level_status = {
+        "user_id": 1,
+        "stat_type": "each_level_status"
+    }
+    response_each_level_status = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": [
+            {
+                "id": 1,
+                "seqnum": 1,
+                "cost": 10,
+                "level_name": "Device lvl 1",
+                "brief": "Device test lvl",
+                "is_succesful": True,
+                "level_type": "program"
+            },
+            {
+                "id": 2,
+                "seqnum": 2,
+                "cost": 0,
+                "level_name": "Text lvl 1",
+                "brief": "Text block",
+                "is_succesful": False,
+                "level_type": "text"
+            },
+            {
+                "id": 3,
+                "seqnum": 3,
+                "cost": 5,
+                "level_name": "Single lvl 1",
+                "brief": "Singlechoice test",
+                "is_succesful": False,
+                "level_type": "singlechoice_test"
+            },
+            {
+                "id": 4,
+                "seqnum": 4,
+                "cost": 7,
+                "level_name": "Multi lvl 1",
+                "brief": "Multichoice test",
+                "is_succesful": False,
+                "level_type": "multichoice_test"
+            }
+        ]
+    }
+    request_avg_efforts = {
+        "user_id": 3,
+        "stat_type": "avg_efforts"
+    }
+    response_avg_efforts = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "avg_efforts": 1
+        }
+    }
+    request_monthly_activity = {
+        "user_id": 3,
+        "stat_type": "monthly_activity"
+    }
+    response_monthly_activity = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "accepted_tasks": 0,
+            "earned_points": 0,
+            "efforts": 0
+        }
+    }
+    request_activity_borders = {
+        "user_id": 3,
+        "stat_type": "activity_borders"
+    }
+    response_activity_borders = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "first_efforts": "2022-01-10 14:53:01",
+            "first_solved": "2022-01-10 14:53:01",
+            "last_efforts": "2022-01-10 14:53:01",
+            "last_solved": "2022-01-10 14:53:01"
+        }
+    }
