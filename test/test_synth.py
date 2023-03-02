@@ -24,19 +24,19 @@ def test_error_in_device():
     assert utils.is_error_response(resp)
     assert "synthethis error" in resp.json()["message"].lower()
 
-@allure.description("Test for invalid testbecnch.v")
+@allure.description("Test for invalid testbench.v")
 @allure.epic("Unit-testing")
 @allure.story("Synthesizer")
-def test_error_in_testbecnch():
+def test_error_in_testbench():
     resp = utils.send_request(settings.SYNTH_PORT,
                               "build", Synth.bad_tb_request)
     assert utils.is_error_response(resp)
     assert "simulation error" in resp.json()["message"].lower()
 
-@allure.description("Test for invalid testbecnch.v without \"$dumpvars\"")
+@allure.description("Test for invalid testbench.v without \"$dumpvars\"")
 @allure.epic("Unit-testing")
 @allure.story("Synthesizer")
-def test_error_in_testbecnch_no_dumpvars():
+def test_error_in_testbench_no_dumpvars():
     resp = utils.send_request(settings.SYNTH_PORT,
                               "build", Synth.bad_tb_dumpvars_request)
     assert utils.is_error_response(resp)
