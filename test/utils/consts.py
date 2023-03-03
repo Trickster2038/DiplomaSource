@@ -909,3 +909,10 @@ class CRUD:
             "is_successful": True
         }
     }
+
+
+class Gateway:
+    request_stats_each_level_passed = {
+        "scope": "general",
+        "stat_type": "each_level_passed"
+    }
