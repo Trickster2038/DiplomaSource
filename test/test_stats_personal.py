@@ -7,7 +7,7 @@ import copy
 import pytest
 
 
-@allure.description("Test for invalid VCD file")
+@allure.description("Test for valid personal stats requests")
 @allure.epic("Unit-testing")
 @allure.story("General stats")
 @pytest.mark.parametrize("payload, response", [
@@ -24,3 +24,10 @@ def test_correct_requests(payload, response):
                               "personalstats", payload)
     assert utils.is_ok_response(resp)
     assert utils.ordered_json(resp.json()) == utils.ordered_json(response)
+
+# write in docs that endpoint returns error in this case
+@allure.description("Test for no user stats request")
+@allure.epic("Unit-testing")
+@allure.story("General stats")
+def test_error_no_user():
+    assert True

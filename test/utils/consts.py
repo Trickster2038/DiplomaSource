@@ -769,3 +769,143 @@ class StatsPersonal:
             "last_solved": "2022-01-10 14:53:01"
         }
     }
+
+
+class CRUD:
+    request_read_user = {
+        "metainfo": {
+            "action": "read",
+            "obj_type": "user"
+        },
+        "data": {
+            "id": 1
+        }
+    }
+    response_read_user = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "id": 1,
+            "nickname": "Deni",
+            "is_admin": True
+        }
+    }
+    request_read_level_brief = {
+        "metainfo": {
+            "action": "read",
+            "obj_type": "levels_brief"
+        },
+        "data": {
+            "id": 1
+        }
+    }
+    response_read_level_brief = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "id": 1,
+            "level_type": 4,
+            "seqnum": 1,
+            "cost": 10,
+            "is_active": True,
+            "name": "Device lvl 1",
+            "brief": "Device test lvl",
+            "level_type_name": "program"
+        }
+    }
+    request_read_level_data = {
+        "metainfo": {
+            "action": "read",
+            "obj_type": "levels_data"
+        },
+        "data": {
+            "id": 1
+        }
+    }
+    response_read_level_data = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "id": 1,
+            "wide_description": "This is wide descr of code",
+            "code": "Code example",
+            "question": "module adder_tb;  \n// Inputs  \nreg [3:0] A;  \nreg [3:0] B;  \nreg Cin;  \n// Outputs  \nwire [3:0] Sum;  \nwire Cout;  \n// Instantiate the Unit Under Test (UUT)  \nripple_adder_4bit uut (  \n.Sum(Sum),  \n.Cout(Cout),  \n.A(A),  \n.B(B),  \n.Cin(Cin)  \n);  \ninitial begin  \n// Initialize Inputs  \nA = 0;  \nB = 0;  \nCin = 0;  \n// Wait 100 ns for global reset to finish  \n#100;  \n// Add stimulus here  \nA=4'b0001;B=4'b0000;Cin=1'b0;  \n#10 A=4'b1010;B=4'b0011;Cin=1'b0;  \n#10 A=4'b1101;B=4'b1010;Cin=1'b1;  \nend  \ninitial begin  \n$dumpfile(\"adder.vcd\");  \n$dumpvars;  \nend  \nendmodule\n",
+            "answer": "[{\"data\":[\"b0\",\"b1\",\"b1101\",\"b1000\"],\"name\":\"Sum[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[],\"name\":\"Cout\",\"wave\":\"0.......................1.....\"},{\"data\":[\"b0\",\"b1\",\"b1010\",\"b1101\"],\"name\":\"A[0:3]\",\"wave\":\"=...................=.=.=.....\"},{\"data\":[\"b0\",\"b11\",\"b1010\"],\"name\":\"B[0:3]\",\"wave\":\"=.....................=.=.....\"},{\"data\":[],\"name\":\"Cin\",\"wave\":\"0.......................1.....\"}]"
+        }
+    }
+    request_read_all_level_brief = {
+        "metainfo": {
+            "action": "read_all",
+            "obj_type": "levels_brief"
+        }
+    }
+    response_read_all_level_brief = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "levels": [
+                {
+                    "id": 1,
+                    "level_type": 4,
+                    "seqnum": 1,
+                    "cost": 10,
+                    "is_active": True,
+                    "name": "Device lvl 1",
+                    "brief": "Device test lvl",
+                    "level_type_name": "program"
+                },
+                {
+                    "id": 2,
+                    "level_type": 1,
+                    "seqnum": 2,
+                    "cost": 0,
+                    "is_active": True,
+                    "name": "Text lvl 1",
+                    "brief": "Text block",
+                    "level_type_name": "text"
+                },
+                {
+                    "id": 3,
+                    "level_type": 2,
+                    "seqnum": 3,
+                    "cost": 5,
+                    "is_active": True,
+                    "name": "Single lvl 1",
+                    "brief": "Singlechoice test",
+                    "level_type_name": "singlechoice_test"
+                },
+                {
+                    "id": 4,
+                    "level_type": 3,
+                    "seqnum": 4,
+                    "cost": 7,
+                    "is_active": True,
+                    "name": "Multi lvl 1",
+                    "brief": "Multichoice test",
+                    "level_type_name": "multichoice_test"
+                }
+            ]
+        }
+    }
+    request_check_succesful = {
+        "metainfo": {
+            "action": "check_successful",
+            "obj_type": "solution_effort"
+        },
+        "data": {
+            "user_id": 1,
+            "level_id": 1
+        }
+    }
+    response_check_succesful = {
+        "status_str": "ok",
+        "status_code": 200,
+        "message": "",
+        "data": {
+            "is_successful": True
+        }
+    }
