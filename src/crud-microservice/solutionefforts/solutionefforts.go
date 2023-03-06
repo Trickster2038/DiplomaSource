@@ -28,6 +28,7 @@ func (solution_effort SolutionEffort) CheckSuccessful() bool {
 
 func (solution_effort SolutionEffort) Create() {
 	db := connection.Connect_db()
+	defer db.Close()
 
 	if solution_effort.CheckSuccessful() {
 		panic("Level is already solved")
@@ -40,6 +41,4 @@ func (solution_effort SolutionEffort) Create() {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	defer db.Close()
 }

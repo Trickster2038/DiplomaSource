@@ -38,6 +38,8 @@ services:
     build: ./src/gateway-gateway
     ports:
       - "8084:8084"
+    environment:
+      MODE: ${MODE}
     # connection :8082
   stats-microservice:
     build: ./src/stats-microservice

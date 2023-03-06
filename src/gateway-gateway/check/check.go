@@ -9,6 +9,7 @@ import (
 	"gateway/user"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -148,6 +149,7 @@ func write_solution_to_stats(level_id int, user_id int, is_correct bool) {
 }
 
 func Check(w http.ResponseWriter, req *http.Request) {
+	mode := os.Getenv("MODE")
 	var response request.ResponseFrame
 
 	defer func() {
@@ -180,7 +182,7 @@ func Check(w http.ResponseWriter, req *http.Request) {
 	}
 
 	user.Check_user_exists(dataFrame.UserID)
-	if level_already_solved(dataFrame.LevelID, dataFrame.UserID) {
+	if level_already_solved(dataFrame.LevelID, dataFrame.UserID) && (mode == "PRODUCTION") {
 
 		var res AnalyzerResponseFrame
 		res.StatusCode = 200
@@ -287,7 +289,9 @@ func Check(w http.ResponseWriter, req *http.Request) {
 				var res AnalyzerResponseFrame
 				res = analyze(payload)
 
-				write_solution_to_stats(dataFrame.LevelID, dataFrame.UserID, res.IsCorrect)
+				if mode == "PRODUCTION" {
+					write_solution_to_stats(dataFrame.LevelID, dataFrame.UserID, res.IsCorrect)
+				}
 
 				w.WriteHeader(res.StatusCode)
 				json.NewEncoder(w).Encode(res)
