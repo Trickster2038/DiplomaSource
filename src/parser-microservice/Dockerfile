@@ -16,6 +16,6 @@ COPY . /app
 EXPOSE 5000
 
 # configure the container to run in an executed manner
-ENTRYPOINT [ "python" ]
+# ENTRYPOINT [ "python" ]
 
-CMD ["main.py" ]
+CMD ["gunicorn", "-w", "4", "main:app", "-b", "0.0.0.0:5000"]

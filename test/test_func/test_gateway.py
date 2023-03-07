@@ -56,7 +56,8 @@ def test_correct_check():
                               "check", Gateway.request_check_correct)
     assert utils.is_ok_response(resp)
     assert resp.json()["is_correct"] == True
-    assert resp.json()["is_already_solved"] == True
+    # CAN DEPENDS ON .env MODE
+    # assert resp.json()["is_already_solved"] == True
 
 @allure.description("Test for no level proxy-request to Check")
 @allure.epic("Integrational testing")
