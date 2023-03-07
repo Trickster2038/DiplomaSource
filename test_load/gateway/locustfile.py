@@ -1,5 +1,7 @@
 from locust import HttpUser, task
 from const import *
+import copy
+import random
 
 
 class BaseUser(HttpUser):
@@ -24,4 +26,6 @@ class BaseUser(HttpUser):
     # FIXME: failing on connections overflow
     # @task
     # def analyzer_check_code_ok(self):
-    #     self.client.post("/check", json=Analyzer.request_check_program_ok)
+    #     payload = copy.deepcopy(Analyzer.request_check_program_ok)
+    #     payload["user_id"] = random.randint(0, 10000)
+    #     self.client.post("/check", json=payload)

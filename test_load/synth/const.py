@@ -1,0 +1,6 @@
+request_synth_success = {
+    "user_id": 1,
+    "level_id": 1,
+    "device_src": "module half_adder(  \n    output S,C,  \n    input A,B  \n    );  \nxor(S,A,B);  \nand(C,A,B);  \nendmodule  \n \nmodule full_adder(  \n    output S,Cout,  \n    input A,B,Cin  \n    );  \nwire s1,c1,c2;  \nhalf_adder HA1(s1,c1,A,B);  \nhalf_adder HA2(S,c2,s1,Cin);  \nor OG1(Cout,c1,c2);  \n \nendmodule  \n \nmodule ripple_adder_4bit(  \n    output [3:0] Sum,  \n    output Cout,  \n    input [3:0] A,B,  \n    input Cin  \n    );  \nwire c1,c2,c3;  \nfull_adder FA1(Sum[0],c1,A[0],B[0],Cin),  \nFA2(Sum[1],c2,A[1],B[1],c1),  \nFA3(Sum[2],c3,A[2],B[2],c2),  \nFA4(Sum[3],Cout,A[3],B[3],c3);  \n \nendmodule\n",
+    "tb_src": "module adder_tb;  \n// Inputs  \nreg [3:0] A;  \nreg [3:0] B;  \nreg Cin;  \n// Outputs  \nwire [3:0] Sum;  \nwire Cout;  \n// Instantiate the Unit Under Test (UUT)  \nripple_adder_4bit uut (  \n.Sum(Sum),  \n.Cout(Cout),  \n.A(A),  \n.B(B),  \n.Cin(Cin)  \n);  \ninitial begin  \n// Initialize Inputs  \nA = 0;  \nB = 0;  \nCin = 0;  \n// Wait 100 ns for global reset to finish  \n#100;  \n// Add stimulus here  \nA=4'b0001;B=4'b0000;Cin=1'b0;  \n#10 A=4'b1010;B=4'b0011;Cin=1'b0;  \n#10 A=4'b1101;B=4'b1010;Cin=1'b1;  \nend  \ninitial begin  \n$dumpfile(\"adder.vcd\");  \n$dumpvars;  \nend  \nendmodule\n"
+}
