@@ -4,7 +4,6 @@ from utils.consts import *
 
 import allure
 import copy
-import pytest
 
 
 @allure.description("Test for proxy-request to CRUD")
