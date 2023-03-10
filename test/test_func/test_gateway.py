@@ -40,7 +40,7 @@ def test_error_no_user_in_check():
 @allure.description("Test for not admin proxy-request to CRUD")
 @allure.epic("Integrational testing")
 @allure.story("Gateway")
-def test_error_not_admin():
+def test_error_not_admin_in_crud():
     resp = utils.send_request(settings.GATEWAY_PORT,
                               "levels", Gateway.request_crud_create_lb_not_admin)
     assert utils.is_error_response(resp)
@@ -61,17 +61,7 @@ def test_correct_check():
 @allure.description("Test for no level proxy-request to Check")
 @allure.epic("Integrational testing")
 @allure.story("Gateway")
-def test_error_no_level():
-    resp = utils.send_request(settings.GATEWAY_PORT,
-                              "check", Gateway.request_check_no_level)
-    assert utils.is_error_response(resp)
-    assert "crud-microservice.levelsbrief error" in resp.json()[
-        "message"].lower()
-    
-@allure.description("Test for no level proxy-request to Check")
-@allure.epic("Integrational testing")
-@allure.story("Gateway")
-def test_error_no_level():
+def test_error_no_level_in_check():
     resp = utils.send_request(settings.GATEWAY_PORT,
                               "check", Gateway.request_check_no_level)
     assert utils.is_error_response(resp)
