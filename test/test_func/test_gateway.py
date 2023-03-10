@@ -88,7 +88,7 @@ def test_error_create_levelsdata():
     assert "device synthesis error" in resp.json()[
         "message"].lower()
     
-@allure.description("Test for wrong code proxy-request to CRUD.CreateLevelsData")
+@allure.description("Test for correct code proxy-request to CRUD.CreateLevelsData")
 @allure.epic("Integrational testing")
 @allure.story("Gateway")
 def test_correct_create_levelsdata():
