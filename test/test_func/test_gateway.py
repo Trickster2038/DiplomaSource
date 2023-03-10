@@ -30,7 +30,7 @@ def test_correct_proxy_stats():
 @allure.description("Test for no user proxy-request to Stats")
 @allure.epic("Integrational testing")
 @allure.story("Gateway")
-def test_error_no_user():
+def test_error_no_user_in_check():
     resp = utils.send_request(settings.GATEWAY_PORT,
                               "check", Gateway.request_check_no_user)
     assert utils.is_error_response(resp)
